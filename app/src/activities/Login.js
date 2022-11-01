@@ -1,12 +1,34 @@
 import { View, Text, SafeAreaView, StyleSheet, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
+import {SERVER_ADDRESS} from '../constaint'
 
-const Login = () => {
+const Login = ({navigation}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const toast = () => {
-        ToastAndroid.show(email + " " + password, ToastAndroid.SHORT)
+    const handleLogin = () => {
+        fetch(`${SERVER_ADDRESS}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        }).then(res => res.json())
+        .then(res => {
+            if(res.status === 200) {
+                navigation.navigate('Home')
+            }
+            else {
+                ToastAndroid.showWithGravity(res.message, ToastAndroid.SHORT, ToastAndroid.CENTER)
+            }
+        })
+    }
+
+    const handleRegister = () => {
+        navigation.navigate("Register")
     }
 
   return (
@@ -31,7 +53,7 @@ const Login = () => {
                 ></TextInput>
                 <TouchableOpacity 
                     style={style.button}
-                    onPress={toast}
+                    onPress={handleLogin}
                 >
                     <Text style={{
                         color: 'white',
@@ -40,7 +62,12 @@ const Login = () => {
                         Login
                     </Text>
                 </TouchableOpacity>
+                <Text style={style.text}
+                onPress={handleRegister}>
+                    Dont have a account? Register here
+                </Text>
             </View>
+            
         </SafeAreaView>
     </View>
   )
@@ -68,7 +95,7 @@ const style = StyleSheet.create({
     },
     button: {
         height: 60,
-        marginTop: 10,
+        marginTop: 20,
         padding: 10,
         width: '50%',
         alignSelf: 'center',
@@ -76,6 +103,10 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#4649FF',
         borderRadius: 5
+    },
+    text: {
+        alignSelf: 'center',
+        marginTop: 20
     }
 })
 
