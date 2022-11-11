@@ -1,6 +1,7 @@
 import { View, Text, SafeAreaView, StyleSheet, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import {SERVER_ADDRESS} from '../constaint'
+import storeLoggedIn from '../utils/storeLoggedIn'
 
 const Login = ({navigation}) => {
     const [email, setEmail] = useState('')
@@ -19,7 +20,7 @@ const Login = ({navigation}) => {
         }).then(res => res.json())
         .then(res => {
             if(res.status === 200) {
-                navigation.navigate('Home')
+                storeLoggedIn(navigation, res._id)
             }
             else {
                 ToastAndroid.showWithGravity(res.message, ToastAndroid.SHORT, ToastAndroid.CENTER)

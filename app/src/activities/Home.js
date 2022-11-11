@@ -1,11 +1,23 @@
-import { StyleSheet, View, SafeAreaView } from 'react-native'
+import { StyleSheet, View, SafeAreaView, ToastAndroid, Pressable, FlatList } from 'react-native'
+import { useEffect } from 'react'
+
 import React from 'react'
 import Header from '../components/Header'
 import Searchbar from '../components/Searchbar'
 import Buttons from '../components/Buttons'
 import Friends from '../components/Friends'
+import Contact from '../components/Contact'
 
-const Home = ({navigation}) => {
+import socket from '../utils/socket'
+
+const Home = ({navigation, route}) => {
+
+
+  useEffect(() => {
+    socket.on('join', route.params._id)
+  }, [])
+
+  ToastAndroid.showWithGravity(route.params._id, ToastAndroid.SHORT, ToastAndroid.CENTER)
 
   return (
     <View style={style.container}>
@@ -14,6 +26,9 @@ const Home = ({navigation}) => {
             <Searchbar/>
             <Buttons navigation = {navigation}/>
             <Friends/>
+            <View>
+              
+            </View>
         </SafeAreaView>
     </View>
   )

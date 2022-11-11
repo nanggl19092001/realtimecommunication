@@ -4,7 +4,9 @@ import React from 'react'
 const Header = () => {
   return (
     <View style={style.container}>
-      <Text style={style.text}>Header</Text>
+      <Text 
+      style={style.text}
+      >Contact</Text>
     </View>
   )
 }
@@ -12,12 +14,11 @@ const Header = () => {
 const style = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 10
     },
     text: {
-        color: 'white'
+        color: 'white',
+        fontSize: 20
     }
 })
 export default Header
