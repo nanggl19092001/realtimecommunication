@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 
 const friendSchema = new mongoose.Schema(
     {
-        emailUser1: {type: String, require: true},
-        emailUser2: {type: String, require: true}
+        emailUser1: {type: mongoose.Types.ObjectId, require: true},
+        emailUser2: {type: mongoose.Types.ObjectId, require: true}
     }
 )
 

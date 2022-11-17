@@ -1,14 +1,29 @@
 import { View, Text, SafeAreaView, StyleSheet, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import {SERVER_ADDRESS} from '../constaint'
+import React, { useEffect, useState } from 'react'
+import {SERVER_IP} from '../constaint'
 import storeLoggedIn from '../utils/storeLoggedIn'
+import getLoggedIn from '../utils/getLoggedIn'
 
 const Login = ({navigation}) => {
+    
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [resolvedLoggedIn, setResolvedLoggedIn] = useState(false)
+
+    useEffect(() => {
+        const log = async () => {
+            const loggedIn = await getLoggedIn(navigation)
+            if(loggedIn != true)
+                navigation.navigate('Home', {_id: loggedIn})
+            else
+                setResolvedLoggedIn(!resolvedLoggedIn)
+        }
+        log()
+    }, [])
+    
 
     const handleLogin = () => {
-        fetch(`${SERVER_ADDRESS}/login`, {
+        fetch(`${SERVER_IP}/login`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
@@ -33,44 +48,52 @@ const Login = ({navigation}) => {
     }
 
   return (
-    <View style={style.container}>
-        <SafeAreaView style={{height: '100%'}}>       
-            <View style={style.label}>
-                <Text>Login</Text>
-            </View>
-            <View style={style.content}>
-                <TextInput 
-                    style={style.input} 
-                    value={email} 
-                    placeholder="Email"
-                    onChangeText={(Email) => setEmail(Email)}
-                ></TextInput>
-                <TextInput 
-                    style={style.input} 
-                    value={password} 
-                    placeholder="Password"
-                    secureTextEntry={true}
-                    onChangeText = {(pwd) => setPassword(pwd)}
-                ></TextInput>
-                <TouchableOpacity 
-                    style={style.button}
-                    onPress={handleLogin}
-                >
-                    <Text style={{
-                        color: 'white',
-                        fontSize: 15
-                    }}>
-                        Login
+    <>
+    { resolvedLoggedIn ?
+        <View style={style.container}>
+            <SafeAreaView style={{height: '100%'}}>       
+                <View style={style.label}>
+                    <Text>Login</Text>
+                </View>
+                <View style={style.content}>
+                    <TextInput 
+                        style={style.input} 
+                        value={email} 
+                        placeholder="Email"
+                        onChangeText={(Email) => setEmail(Email)}
+                    ></TextInput>
+                    <TextInput 
+                        style={style.input} 
+                        value={password} 
+                        placeholder="Password"
+                        secureTextEntry={true}
+                        onChangeText = {(pwd) => setPassword(pwd)}
+                    ></TextInput>
+                    <TouchableOpacity 
+                        style={style.button}
+                        onPress={handleLogin}
+                    >
+                        <Text style={{
+                            color: 'white',
+                            fontSize: 15
+                        }}>
+                            Login
+                        </Text>
+                    </TouchableOpacity>
+                    <Text style={style.text}
+                    onPress={handleRegister}>
+                        Dont have a account? Register here
                     </Text>
-                </TouchableOpacity>
-                <Text style={style.text}
-                onPress={handleRegister}>
-                    Dont have a account? Register here
-                </Text>
-            </View>
-            
-        </SafeAreaView>
-    </View>
+                </View>
+                
+            </SafeAreaView>
+        </View>
+        :
+        <View style={style.loadingScreen}>
+            <Text style={style.loadingText}>Text</Text>
+        </View>
+    }
+    </>
   )
 }
 
@@ -108,6 +131,17 @@ const style = StyleSheet.create({
     text: {
         alignSelf: 'center',
         marginTop: 20
+    },
+    loadingScreen: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#251B37',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    loadingText: {
+        color: 'white',
+        fontSize: 40
     }
 })
 

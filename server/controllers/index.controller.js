@@ -18,6 +18,16 @@ class indexController{
             }
         })
     }
+
+    register(req,res) {
+        const {firstname, lastname, password, birthday, email, phonenumber} = req.body
+
+        const params = [firstname, lastname, password, birthday, email, phonenumber]
+
+        accountModel.create({firstName: firstname, lastName: lastname, password: password, birthday: birthday, email: email, phoneNumber: phonenumber}, (err, result) => {
+            console.log(result)
+        })
+    }
 }
 
 module.exports = new indexController
