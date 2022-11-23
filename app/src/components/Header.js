@@ -5,7 +5,7 @@ import React from 'react'
 const Header = ({navigation, user}) => {
 
   const handleUser = () => {
-    navigation.navigate('UserOptions')
+    navigation.navigate('UserOptions', {user: user})
   }
 
   return (
@@ -32,11 +32,12 @@ const style = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: 20
+        fontSize: 20,
+        fontWeight: 'bold'
     },
     avatar: {
-      width: 45,
-      height: 45,
+      width: 40,
+      height: 40,
       borderRadius: 30
     }
 })

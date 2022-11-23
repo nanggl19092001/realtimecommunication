@@ -1,4 +1,4 @@
-import { StyleSheet, View, SafeAreaView, ToastAndroid} from 'react-native'
+import { StyleSheet, View, Text, SafeAreaView, ToastAndroid, ScrollView} from 'react-native'
 import { useEffect, useState } from 'react'
 
 import React from 'react'
@@ -21,10 +21,10 @@ const Home = ({navigation, route}) => {
         <SafeAreaView style={{height: '100%'}}>
             <Header navigation={navigation} user={route.params._id}/>
             <Searchbar/>
-            <Buttons navigation = {navigation}/>
-            <Friends user={route.params._id}/>
-            <View>
-            </View>
+            <ScrollView style={style.textContainer}>
+              <Buttons navigation = {navigation} user = {route.params._id}/>
+              <Friends navigation = {navigation} user={route.params._id}/>
+            </ScrollView>
         </SafeAreaView>
     </View>
   )
@@ -33,6 +33,9 @@ const Home = ({navigation, route}) => {
 const style = StyleSheet.create({
     container: {
         backgroundColor: '#251B37'
+    },
+    textContainer: {
+      marginTop: 20,
     }
 })
 

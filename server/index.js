@@ -4,13 +4,10 @@ const connection = require('./database')
 const routes = require('./routes/index.router')
 const app = express()
 
-const conversation = []
-
-
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({extended: true}))
 app.use('/public', express.static(path.join(__dirname,'./public')))
 
 const http = require('http').createServer(app)

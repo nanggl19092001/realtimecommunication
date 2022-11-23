@@ -6,12 +6,15 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Profile from './src/activities/Profile'
 import UserOptions from './src/activities/UserOptions'
+import ChangePassword from './src/activities/ChangePassword'
+import Conversation from './src/activities/Conversation'
 
 const Stack = createNativeStackNavigator()
 
 function App() {
 
   const [ auth, setAuth] = useState(false)
+  
 
   return (
       <NavigationContainer>
@@ -25,9 +28,28 @@ function App() {
               }
             }
           />
+          <Stack.Screen 
+            name = "Change Password"
+            component={ChangePassword}
+            options={
+              {
+                title: 'Change password'
+              }
+            }
+          />
           <Stack.Screen
             name="Home"
             component={Home}
+            options={
+              {
+                headerShown: false
+              }
+            }
+            />
+          
+          <Stack.Screen
+            name="Conversation"
+            component={Conversation}
             options={
               {
                 headerShown: false

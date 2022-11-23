@@ -2,9 +2,10 @@ const mongoose = require('mongoose')
 
 const friendSchema = new mongoose.Schema(
     {
-        senderEmail: {type: String, require: true},
-        receiverEmail: {type: String, require: true},
+        sender: {type: mongoose.Types.ObjectId, require: true},
+        receiver: {type: mongoose.Types.ObjectId, require: true},
         sent: {type: Date, default: Date.now()},
+        status: {type: Boolean, default: false},
         resolve: {type: Boolean, default: false}
     }
 )
