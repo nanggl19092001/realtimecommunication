@@ -17,16 +17,17 @@ const socketIO = require('socket.io')(http, {
 
 const cors = require('cors')
 
+app.use((req, res, next) => {
+    res.io = socketIO
+    next()
+})
+
 app.use(cors())
 
 socketIO.on('connection', (socket) => {
 
-    socket.on('join', (conversation) => {
-        socket.join(conversation)
-    })
-
-    socket.on('send-message', (message, conversation) => {
-        socket.to(conversation).emit('receive-message', message)
+    socket.on('join', (id) => {
+        socket.join(id)
     })
 
     socket.on('disconnect', () => {

@@ -16,7 +16,7 @@ class userController {
                     {user1: mongoose.Types.ObjectId(user2Id), user2: mongoose.Types.ObjectId(user1Id)}
                 ]
             },[],
-            { sort: { sentDate: -1 }, limit: limit}
+            { sort: { _id: -1 }, limit: limit}
             ,(err, results) => {
                 if(err) 
                     return res.send(JSON.stringify({status: 500}))
@@ -82,8 +82,7 @@ class userController {
 
     addMessage(req,res) {
         const {sender, receiver, message} = req.body
-
-        console.log(req.body)
+        const io = res.io
         messageModel.create(
             {
                 user1: sender,
@@ -94,8 +93,11 @@ class userController {
             ,(err, results) => {
                 if(err)
                     return res.send(JSON.stringify({status: 500}))
-                else
-                    return res.send(JSON.stringify({status: 200}))
+                else{
+                    const message = results
+                    io.to(receiver).emit('receive-message', {sender, message})
+                    return res.send(JSON.stringify({status: 200, results: results}))
+                }
             }
         )
     }
@@ -220,9 +222,9 @@ class userController {
     }
 
     getFriendRequest(req,res) {
-        const userEmail = req.params.email
+        const user = req.params.id
 
-        friendRequest.find({receiverEmail: userEmail}, (err, results) => {
+        friendRequest.find({receiver: user}, (err, results) => {
             if(err)
                 return res.send(JSON.stringify({status: 400}))
             return res.send(JSON.stringify(results))
@@ -230,11 +232,12 @@ class userController {
     }
 
     friendRequest(req,res) {
-        const {userEmail, friendEmail} = req.body
+        const {user, friend} = req.body
 
-        friendRequest.create({senderEmail: userEmail, receiverEmail: friendEmail}, (err,results) => {
+        friendRequest.create({sender: mongoose.Types.ObjectId(user), receiver: mongoose.Types.ObjectId(friend)}, (err,results) => {
             if(err) return res.send(JSON.stringify({status: 400}))
-
+            
+            res.io.to(friend).emit('receive-friendRequest', 'reload')
             return res.send(JSON.stringify({status: 200}))
         })
     }
@@ -265,6 +268,55 @@ class userController {
             )
 
         
+    }
+
+    async getProfileInfomation(req,res) {
+        const {userProfile, user} = req.query
+
+        try{
+            const resultProfile = await accountModel.findOne({_id: userProfile},{
+                password: 0 
+            })
+    
+            const resultIsFriend = await friendModel.find({
+                $or: [
+                    {user1: user, user2: userProfile},
+                    {user1: userProfile, user2: user}
+                ]
+            })
+    
+            const results = {
+                profile: resultProfile,
+                isFriend: resultIsFriend.length > 0
+            }
+
+            return res.send(JSON.stringify({status: 200, results: results}))
+        }
+        catch(err) {
+            console.log(err)
+            return res.send(JSON.stringify({status: 500}))
+        }
+        
+    }
+
+    unfriend(req,res) {
+        const {user, friend} = req.body
+
+        friendModel.deleteOne({
+            $or: [
+                {user1: user, user2: friend},
+                {user1: friend, user2: user}
+            ]
+        }, (err,results) => {
+            if(err){
+                console.log(err)
+                return res.send(JSON.stringify({status: 500}))
+            }
+            else{
+                console.log(results)
+                return res.send(JSON.stringify({status: 200}))
+            }
+        })
     }
 }
 

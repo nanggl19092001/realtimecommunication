@@ -7,8 +7,6 @@ import Searchbar from '../components/Searchbar'
 import Buttons from '../components/Buttons'
 import Friends from '../components/Friends'
 import Contact from '../components/Contact'
-
-import socket from '../utils/socket'
 import { SERVER_IP } from '../constaint'
 
 const Home = ({navigation, route}) => {
@@ -20,7 +18,7 @@ const Home = ({navigation, route}) => {
     <View style={style.container}>
         <SafeAreaView style={{height: '100%'}}>
             <Header navigation={navigation} user={route.params._id}/>
-            <Searchbar/>
+            <Searchbar navigation={navigation} user={route.params._id}/>
             <ScrollView style={style.textContainer}>
               <Buttons navigation = {navigation} user = {route.params._id}/>
               <Friends navigation = {navigation} user={route.params._id}/>

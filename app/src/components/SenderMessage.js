@@ -4,11 +4,11 @@ import { SERVER_IP } from '../constaint'
 
 const SenderMessage = ({message, user}) => {
   return (
-    <View style={styles.senderContainer}>
+    <View style={styles.senderContainer}> 
+        <Text style={styles.senderText}>{message}</Text>
         <Image
             style={styles.userAvatar}
             source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg`}}/>
-        <Text style={styles.senderText}>{message}</Text>
     </View>
   )
 }
@@ -17,17 +17,17 @@ export default SenderMessage
 
 const styles = StyleSheet.create({
     senderContainer: {
-        alignItems: 'flex-start',
         padding: 10,
-        maxWidth: '70%',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'flex-end'
     },
     senderText: {
         padding: 10,
         backgroundColor: '#2146C7',
-        marginLeft: 20,
+        marginRight: 20,
         borderRadius: 10,
-        color: 'white'
+        color: 'white',
+        maxWidth: '70%'
     },
     userAvatar: {
         width: 30,

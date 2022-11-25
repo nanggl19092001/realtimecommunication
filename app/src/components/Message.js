@@ -1,15 +1,36 @@
 import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import { SERVER_IP } from '../constaint'
 import ReceiverMessage from './ReceiverMessage'
 import SenderMessage from './SenderMessage'
+import MessageContext from '../utils/Context/MessageContext'
+import socketIO from '../utils/socketIO'
 
 const Message = ({user, friend}) => {
 
+  const { message, setMessage } = useContext(MessageContext)
+  const receiveMess = message
+
   const scrollViewRef = useRef();
   const [ limit, setLimit] = useState(15)
-  const [ message, setMessage ] = useState(null)
   const [ loading, setLoading ] = useState(true)
+
+  
+
+  useEffect(() => {
+    socketIO.emit('join', user)
+    socketIO.on('receive-message', payload => {
+      console.log(payload)
+      if(payload.sender == friend._id){
+        const newMessage = [...message, payload.message]
+        setMessage(newMessage)
+      }
+    })
+
+    return () => {
+      socketIO.removeAllListeners()
+    }
+  })
 
   useEffect(() => {
     fetch(`${SERVER_IP}/user/message?a=${user}&b=${friend._id}&limit=${limit}`)
@@ -21,7 +42,7 @@ const Message = ({user, friend}) => {
   }, [limit])
 
   const handleScrollToTop = (offset) => {
-    if(offset == 0 && message.length == limit){
+    if(offset == 0 && message.length >= limit){
       setLoading(true)
       setLimit(limit + 20)
     }
@@ -40,7 +61,7 @@ const Message = ({user, friend}) => {
       ref={scrollViewRef}
       alwaysBounceVertical={true}
       onScrollEndDrag={(e) => handleScrollToTop(e.nativeEvent.contentOffset.y)}
-      onContentSizeChange={() => limit == 15 ? scrollViewRef.current.scrollToEnd({animated: false}): null }
+      onContentSizeChange={() => limit == 15 ? scrollViewRef.current.scrollToEnd({animated: true}): null }
       >
         {
           loading ?

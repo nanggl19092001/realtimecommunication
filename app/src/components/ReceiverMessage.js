@@ -5,10 +5,11 @@ import { SERVER_IP } from '../constaint'
 const ReceiverMessage = ({message, user}) => {
   return (
     <View style={styles.receiverContainer}>
-        <Text style={styles.message}>{message}</Text>
         <Image
             style={styles.userAvatar}
             source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg`}}/>
+        <Text style={styles.message}>{message}</Text>
+        
     </View>
   )
 }
@@ -17,14 +18,16 @@ export default ReceiverMessage
 
 const styles = StyleSheet.create({
     receiverContainer: {
+        
+        alignItems: 'flex-start',
         padding: 10,
-        flexDirection: 'row',
-        justifyContent: 'flex-end'
+        maxWidth: '70%',
+        flexDirection: 'row'
     },
     message: {
         padding: 10,
         backgroundColor: '#2146C7',
-        marginRight: 20,
+        marginLeft: 20,
         borderRadius: 10,
         color: 'white'
     },

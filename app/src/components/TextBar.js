@@ -1,11 +1,16 @@
 import { StyleSheet, Text, View, TextInput, TouchableHighlight } from 'react-native'
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useContext, useEffect, useState} from 'react'
 import DocumentPicker from 'react-native-document-picker'
 import { SERVER_IP } from '../constaint'
+import MessageContext from '../utils/Context/MessageContext'
+import socketIO from '../utils/socketIO'
 
 const TextBar = ({user, friend}) => {
+
+    const { message, setMessage } = useContext(MessageContext) 
     const [ file, setFile ] = useState([])
     const [ text, setText ] = useState("")
+
     const handleDocumentSelection = useCallback(async () => {
         try {
             const response = await DocumentPicker.pick({
@@ -34,8 +39,10 @@ const TextBar = ({user, friend}) => {
       })
     }).then(res => res.json())
     .then(res => {
-      if(res.status == 200)
+      if(res.status == 200){
         setText("")
+        setMessage([...message, res.results])
+      }
     })
   }
 

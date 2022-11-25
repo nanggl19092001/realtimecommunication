@@ -4,8 +4,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { SERVER_IP } from '../constaint'
 
-const Searchbar = () => {
-  const navigation = useNavigation()
+const Searchbar = ({navigation, user}) => {
   const [ searchText, setSearchText ] = useState("")
   const [ searchResult, setSearchResult] = useState([])
 
@@ -14,7 +13,7 @@ const Searchbar = () => {
   }
 
   const handleProfile = (id) => {
-    navigation.navigate('Profile', {id:id})
+    navigation.navigate('Profile', {id: id, user: user})
   }
 
   useEffect(() => {
