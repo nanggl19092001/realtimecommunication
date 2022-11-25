@@ -8,6 +8,7 @@ import Profile from './src/activities/Profile'
 import UserOptions from './src/activities/UserOptions'
 import ChangePassword from './src/activities/ChangePassword'
 import Conversation from './src/activities/Conversation'
+import FriendRequest from './src/activities/FriendRequest'
 
 const Stack = createNativeStackNavigator()
 
@@ -46,7 +47,23 @@ function App() {
               }
             }
             />
-          
+          <Stack.Screen
+            name="Friend Request"
+            component={FriendRequest}
+            options={
+              {
+                headerShown: true,
+                headerTitle: 'Friend Request',
+                headerStyle: {
+                  backgroundColor: '#251B37',
+                },
+                headerTitleStyle: {
+                  color: 'white'
+                },
+                headerTintColor: "white"
+              }
+            }
+            />
           <Stack.Screen
             name="Conversation"
             component={Conversation}

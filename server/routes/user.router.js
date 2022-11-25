@@ -10,17 +10,21 @@ Router.get('/profileinfo', userController.getProfileInfomation)
 
 Router.get('/conversation/:id', userController.getConversation)
 
-Router.get('/friends/:id', userController.getFriends)
-
 Router.get('/searchuser/:info', userController.searchUser)
-
-Router.get('/message', userController.getMessage)
 
 Router.post('/message', userController.addMessage)
 
+Router.get('/message', userController.getMessage)
+
+Router.get('/friends/:id', userController.getFriends)
+
+Router.delete('/friend', userController.unfriend)
+
+Router.put('/friend', userController.acceptFriend)
+
 Router.get('/friendrequest/:id', userController.getFriendRequest)
 
-Router.delete('/unfriend', userController.unfriend)
+Router.put('/friendrequest', userController.declineRequest)
 
 Router.post('/friendrequest', userController.friendRequest)
 

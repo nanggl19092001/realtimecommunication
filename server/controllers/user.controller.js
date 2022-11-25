@@ -221,14 +221,30 @@ class userController {
             })
     }
 
-    getFriendRequest(req,res) {
+    async getFriendRequest(req,res) {
         const user = req.params.id
+        try {
+            const result = []
 
-        friendRequest.find({receiver: user}, (err, results) => {
-            if(err)
-                return res.send(JSON.stringify({status: 400}))
-            return res.send(JSON.stringify(results))
-        })
+            const resultRequest = await friendRequest.find({receiver: user, status: false})
+
+            for(let i = 0; i < resultRequest.length; i++){
+                const account = await accountModel.findOne({
+                    _id: resultRequest[i].sender,
+                    
+                }, {password: 0, email: 0, phonenumber: 0})
+
+                result.push({
+                    request: resultRequest[i],
+                    account: account
+                })
+            }
+
+            return res.send(JSON.stringify(result))
+        }
+        catch (e) {
+            return res.send(JSON.stringify({status: 500}))
+        }
     }
 
     friendRequest(req,res) {
@@ -284,10 +300,17 @@ class userController {
                     {user1: userProfile, user2: user}
                 ]
             })
+
+            const pendingFriendRequest = await friendRequest.find({
+                sender: user,
+                receiver: userProfile,
+                status: false
+            })
     
             const results = {
                 profile: resultProfile,
-                isFriend: resultIsFriend.length > 0
+                isFriend: resultIsFriend.length > 0,
+                pendingRequest: pendingFriendRequest.length > 0
             }
 
             return res.send(JSON.stringify({status: 200, results: results}))
@@ -318,6 +341,42 @@ class userController {
             }
         })
     }
+
+    declineRequest(req,res) {
+        const {requestId} = req.body
+
+        friendRequest.updateOne({_id: requestId},
+            {
+                $set: {status: true}
+            },
+        (err,results) => {
+            if(err)
+                return res.send(JSON.stringify({status: 500}))
+            else
+                return res.send(JSON.stringify({status: 200}))
+        })
+    }
+
+    async acceptFriend(req,res) {
+
+        const {requestId, sender, receiver} = req.body
+        try {
+            const changeResult = await friendRequest.updateOne({_id: requestId},
+                {
+                    $set: {status: true}
+                })
+            
+            const friendResult = await friendModel.create({
+                user1: sender,
+                user2: receiver
+            })
+
+            res.send(JSON.stringify({status: 200, results: friendResult}))
+        } catch (error) {
+            res.send(JSON.stringify({status: 500, err: error}))
+        }
+    }
+
 }
 
 module.exports = new userController

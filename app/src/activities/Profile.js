@@ -6,9 +6,11 @@ const Profile = ({navigation, route}) => {
 
   const { id, user } = route.params
 
+  const [ refresh, setRefresh ] = useState(false)
   const [ loading, setLoading ] = useState(true)
   const [ isFriend, setIsFriend ] = useState(false)
   const [ profile, setProfile ] = useState(null)
+  const [ pendingFriendRequest, setPendingFriendRequest ] = useState(false)
 
   useEffect(() => {
     fetch(`${SERVER_IP}/user/profileinfo?userProfile=${id}&user=${user}`)
@@ -17,15 +19,42 @@ const Profile = ({navigation, route}) => {
       setLoading(false)
       setProfile(res.results.profile)
       setIsFriend(res.results.isFriend)
+      setPendingFriendRequest(res.results.pendingRequest)
     })
-  }, [])
+  }, [refresh])
 
   const handleAddFriend = () => {
-    
+    fetch(`${SERVER_IP}/user/friendrequest`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: user,
+        friend: id
+      })
+    }).then(res => res.json())
+    .then(res => {
+      if(res.status == 200)
+        setRefresh(!refresh)
+    })
   }
 
-  const handleUnFriend = () => {
-
+  const handleUnfriend = () => {
+    fetch(`${SERVER_IP}/user/friend`, {
+      method: 'DELETE',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: user,
+        friend: id
+      })
+    }).then(res => res.json())
+    .then(res => {
+      if(res.status == 200)
+        setRefresh(!refresh)
+    })
   }
 
   return (
@@ -40,12 +69,18 @@ const Profile = ({navigation, route}) => {
           </View>
         }
         {
-          loading ? <></> : 
+          loading ? <></> :
+            pendingFriendRequest ? 
+            <Button title='Pending'
+            disabled={true}>
+            </Button>:
             isFriend ? 
             <Button
-              title='Un Friend'/> : 
+              title='Un Friend'
+              onPress={handleUnfriend}/> : 
             <Button
-              title='Add Friend'/>
+              title='Add Friend'
+              onPress={handleAddFriend}/>
           
         }
         {
