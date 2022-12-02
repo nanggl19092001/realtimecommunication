@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const initAvatar = require('../middlewares/initAvatar')
 const accountModel = require('../models/account.model')
 
 class indexController{
@@ -19,14 +20,38 @@ class indexController{
         })
     }
 
-    register(req,res) {
-        const {firstname, lastname, password, birthday, email, phonenumber} = req.body
+    async register(req,res) {
+        const {firstname, lastname, birthday, email, phonenumber, password} = req.body
 
-        const params = [firstname, lastname, password, birthday, email, phonenumber]
+        if(!firstname || !lastname || !password || !birthday || !email || !phonenumber){
+            return res.send(JSON.stringify({status: 500, message: "Missing infomation"}))
+        }
+        try {
 
-        accountModel.create({firstName: firstname, lastName: lastname, password: password, birthday: birthday, email: email, phoneNumber: phonenumber}, (err, result) => {
-            console.log(result)
-        })
+            const findUser = await accountModel.findOne({
+                $or: [
+                    {email: email},
+                    {phoneNumber: phonenumber}
+                ]
+            })
+
+            if(findUser){
+                return res.send(JSON.stringify({status: 403, message: "email or phonenumber is already exist"}))
+            }
+            else {
+                const createAccountResult = await accountModel.create({firstName: firstname, lastName: lastname, password: password, birthday: birthday, email: email, phoneNumber: phonenumber})
+
+                initAvatar(createAccountResult._id)
+
+                return res.send(JSON.stringify({status: 200, results: createAccountResult}))
+            }
+
+            
+        } catch (error) {
+            res.send(JSON.stringify({status: 500, message: "error"}))
+        }
+
+        
     }
 }
 

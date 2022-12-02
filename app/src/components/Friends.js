@@ -1,22 +1,24 @@
 import { View, Text, TouchableHighlight, Image, StyleSheet } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
 import { SERVER_IP } from '../constaint'
 
 const Friends = ({navigation, user}) => {
 
   const [ conversation, setConversation ] = useState()
-  
-  useEffect(() => {
-    fetch(`${SERVER_IP}/user/conversation/${user}`)
-    .then(res => res.json())
-    .then(res => {
-      let textMessage = []
-      const friends = res.friends.map((f) => {
-        return {_id: f._id, firstName: f.firstName, lastName: f.lastName}
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetch(`${SERVER_IP}/user/conversation/${user}`)
+      .then(res => res.json())
+      .then(res => {
+        const friends = res.friends.map((f) => {
+          return {_id: f._id, firstName: f.firstName, lastName: f.lastName}
+        })
+        setConversation(friends)
       })
-      setConversation(friends)
-    })
-  }, [])
+    }, [])
+  )
 
   const handleToConversation = (con) => {
     navigation.navigate("Conversation", {

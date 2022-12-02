@@ -1,11 +1,14 @@
 import { View, Text, SafeAreaView, StyleSheet, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { useIsFocused } from '@react-navigation/native'
+import React, { useContext, useEffect, useState } from 'react'
 import {SERVER_IP} from '../constaint'
 import storeLoggedIn from '../utils/storeLoggedIn'
 import getLoggedIn from '../utils/getLoggedIn'
+import UserContext from '../utils/Context/UserContext'
 
 const Login = ({navigation}) => {
-    
+
+    const isFocused = useIsFocused()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [resolvedLoggedIn, setResolvedLoggedIn] = useState(false)
@@ -14,7 +17,10 @@ const Login = ({navigation}) => {
         const log = async () => {
             const loggedIn = await getLoggedIn(navigation)
             if(loggedIn != true)
-                navigation.navigate('Home', {_id: loggedIn})
+                navigation.navigate('Tab Activities', {
+                    screen: 'Home',
+                    params: {_id: loggedIn}
+            })
             else
                 setResolvedLoggedIn(!resolvedLoggedIn)
         }
@@ -49,7 +55,8 @@ const Login = ({navigation}) => {
 
   return (
     <>
-    { resolvedLoggedIn ?
+    { 
+    resolvedLoggedIn ?
         <View style={style.container}>
             <SafeAreaView style={{height: '100%'}}>       
                 <View style={style.label}>
@@ -85,7 +92,6 @@ const Login = ({navigation}) => {
                         Dont have a account? Register here
                     </Text>
                 </View>
-                
             </SafeAreaView>
         </View>
         :

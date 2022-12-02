@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text, SafeAreaView, ToastAndroid, ScrollView} from 'react-native'
 import { useEffect, useState } from 'react'
+import { useIsFocused } from '@react-navigation/native'
 
 import React from 'react'
 import Header from '../components/Header'
@@ -10,7 +11,6 @@ import Contact from '../components/Contact'
 import { SERVER_IP } from '../constaint'
 
 const Home = ({navigation, route}) => {
-
 
   ToastAndroid.showWithGravity(route.params._id, ToastAndroid.SHORT, ToastAndroid.CENTER)
 

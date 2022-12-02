@@ -1,10 +1,12 @@
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
 import { SERVER_IP } from '../constaint'
 import React, { useEffect, useState } from 'react'
+import socketIO from '../utils/socketIO'
 
 const Header = ({navigation, user}) => {
 
   const [ requestCount, setRequestCount ] = useState(0)
+  const [ refreshRequest, setRefreshRequest ] = useState(false)
 
   const handleUser = () => {
     navigation.navigate('UserOptions', {user: user})
@@ -15,12 +17,18 @@ const Header = ({navigation, user}) => {
   }
 
   useEffect(() => {
+    socketIO.on('receive-friend-request', (message) => {
+      setRefreshRequest(!refreshRequest)
+    })
+  }, [])
+
+  useEffect(() => {
     fetch(`${SERVER_IP}/user/friendrequest/${user}`)
     .then(res => res.json())
     .then(res => {
       setRequestCount(res.length)
     })
-  }, [])
+  }, [refreshRequest])
 
   return (
     <View style={style.container}>

@@ -9,8 +9,23 @@ import UserOptions from './src/activities/UserOptions'
 import ChangePassword from './src/activities/ChangePassword'
 import Conversation from './src/activities/Conversation'
 import FriendRequest from './src/activities/FriendRequest'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 const Stack = createNativeStackNavigator()
+const Tab = createBottomTabNavigator()
+
+function TabActivities() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen 
+      name="Home" 
+      component={Home}
+      options={{
+        headerShown: false
+      }}/>
+    </Tab.Navigator>
+  )
+}
 
 function App() {
 
@@ -39,8 +54,8 @@ function App() {
             }
           />
           <Stack.Screen
-            name="Home"
-            component={Home}
+            name="Tab Activities"
+            component={TabActivities}
             options={
               {
                 headerShown: false
@@ -78,7 +93,15 @@ function App() {
             component={Profile}
             options={
               {
-                headerShown: false
+                headerShown: true,
+                headerTitle: 'Profile',
+                headerStyle: {
+                  backgroundColor: '#251B37',
+                },
+                headerTitleStyle: {
+                  color: 'white'
+                },
+                headerTintColor: "white"
               }
             }
           />
@@ -96,7 +119,15 @@ function App() {
             component={UserOptions}
             options={
               {
-                headerShown: false
+                headerShown: true,
+                headerTitle: 'Profile',
+                headerStyle: {
+                  backgroundColor: '#251B37',
+                },
+                headerTitleStyle: {
+                  color: 'white'
+                },
+                headerTintColor: "white"
               }
             }
           />
