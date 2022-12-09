@@ -4,7 +4,6 @@ import { SERVER_IP } from '../constaint'
 
 const Profile = ({navigation, route}) => {
 
-  console.log(route.params)
   const { id, user } = route.params
 
   const [ refresh, setRefresh ] = useState(false)

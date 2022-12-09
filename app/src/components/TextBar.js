@@ -1,14 +1,19 @@
-import { StyleSheet, Text, View, TextInput, TouchableHighlight } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableHighlight, TouchableOpacity } from 'react-native'
 import React, {useCallback, useContext, useEffect, useState} from 'react'
 import DocumentPicker from 'react-native-document-picker'
 import { SERVER_IP } from '../constaint'
 import MessageContext from '../utils/Context/MessageContext'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Feather from 'react-native-vector-icons/Feather'
 import socketIO from '../utils/socketIO'
+
+const addFileIcon = <AntDesign name="addfile" size={30} color="white"></AntDesign>
+
+const sendIcon = <Feather name="send" size={30} color="white"></Feather>
 
 const TextBar = ({user, friend}) => {
 
     const { message, setMessage } = useContext(MessageContext) 
-    const [ file, setFile ] = useState([])
     const [ text, setText ] = useState("")
 
     const handleDocumentSelection = useCallback(async () => {
@@ -17,7 +22,9 @@ const TextBar = ({user, friend}) => {
                 presentationStyle: 'formSheet'
             })
 
-            setFile(response)
+            if(response[0]){
+              console.log(response)
+            }
         }
         catch (err) {
             console.warn(err)}
@@ -55,20 +62,22 @@ const TextBar = ({user, friend}) => {
         value={text}
         onChangeText={(txt) => setText(txt)}
       />
-      <TouchableHighlight
+      <TouchableOpacity
       style={styles.FileInput}
       onPress={handleDocumentSelection}
-      Text={file}
       >
-        <Text>File</Text>
-      </TouchableHighlight>
-      <TouchableHighlight
+        <View>
+          {addFileIcon}
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={styles.SendTextBut}
         onPress={handleSendText}
-        Text={file}
       >
-        <Text style={{color: 'white'}}>Send</Text>
-      </TouchableHighlight>
+        <View>
+          {sendIcon}
+        </View>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -100,6 +109,5 @@ const styles = StyleSheet.create({
     SendTextBut: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center'
     }
 })

@@ -30,10 +30,6 @@ socketIO.on('connection', (socket) => {
         socket.join(id)
     })
 
-    socket.on('send-friend-request', (receiver) => {
-        socket.to(receiver).emit('receive-friend-request', {message: "new friend request"})
-    })
-
     socket.on('disconnect', () => {
         socket.disconnect()
     })

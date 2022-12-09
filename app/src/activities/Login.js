@@ -1,31 +1,32 @@
 import { View, Text, SafeAreaView, StyleSheet, TextInput, ToastAndroid, TouchableOpacity } from 'react-native'
-import { useIsFocused } from '@react-navigation/native'
-import React, { useContext, useEffect, useState } from 'react'
+
+import {useFocusEffect} from '@react-navigation/native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {SERVER_IP} from '../constaint'
 import storeLoggedIn from '../utils/storeLoggedIn'
 import getLoggedIn from '../utils/getLoggedIn'
-import UserContext from '../utils/Context/UserContext'
 
 const Login = ({navigation}) => {
 
-    const isFocused = useIsFocused()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [resolvedLoggedIn, setResolvedLoggedIn] = useState(false)
-
-    useEffect(() => {
-        const log = async () => {
-            const loggedIn = await getLoggedIn(navigation)
-            if(loggedIn != true)
-                navigation.navigate('Tab Activities', {
-                    screen: 'Home',
-                    params: {_id: loggedIn}
-            })
-            else
-                setResolvedLoggedIn(!resolvedLoggedIn)
-        }
-        log()
-    }, [])
+    
+    useFocusEffect(
+        useCallback(() => {
+            const log = async () => {
+                const loggedIn = await getLoggedIn(navigation)
+                if(loggedIn != true)
+                    navigation.navigate('Tab Activities', {
+                        screen: 'Home',
+                        params: {_id: loggedIn}
+                })
+                else
+                    setResolvedLoggedIn(!resolvedLoggedIn)
+            }
+            log()
+        },[])
+    )
     
 
     const handleLogin = () => {

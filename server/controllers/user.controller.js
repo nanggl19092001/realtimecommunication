@@ -4,6 +4,33 @@ const friendModel = require('../models/friend.model')
 const messageModel = require('../models/message.model')
 const { default: mongoose } = require('mongoose')
 class userController {
+
+    readMessage(req, res) {
+        const { user, friend } = req.body
+
+        messageModel.updateMany({
+            $or: [
+                {
+                    user1: mongoose.Types.ObjectId(user),
+                    user2: mongoose.Types.ObjectId(friend)
+                },
+                {
+                    user1: mongoose.Types.ObjectId(friend),
+                    user2: mongoose.Types.ObjectId(user)
+                }
+            ]
+        }, {
+            read: true
+        },(err, result) => {
+            if(err){
+                res.send(JSON.stringify({status: 500, message: err}))
+            }
+            else{
+                res.send(JSON.stringify({status: 200}))
+            }
+        })
+    }
+
     getMessage(req, res) {
         const { a, b, limit } = req.query
         const user1Id = a
@@ -27,57 +54,50 @@ class userController {
         )
     }
 
-    getConversation(req,res) {
+    async getConversation(req,res) {
         const id = req.params.id
 
-        friendModel.find({
-            $or: [
-                {user1: mongoose.Types.ObjectId(id)},
-                {user2: mongoose.Types.ObjectId(id)}
-            ]
-        }, (err, results) => {
-            if(err) {
-                console.log(err)
-                return res.send(JSON.stringify({status: 500}))
-            }
-            else {
-                let mappedUser = results.map(result => {
-                    if(result.user1 == id)
-                        return result.user2
-                    else
-                        return result.user1
-                })
+        try {
+            const friends = await friendModel.find({
+                $or: [
+                    {user1: mongoose.Types.ObjectId(id)},
+                    {user2: mongoose.Types.ObjectId(id)}
+                ]
+            })
 
-                messageModel.find(
-                    {
-                        $or: [
-                            {user1: mongoose.Types.ObjectId(id), user2: {$in: mappedUser}},
-                            {user2: mongoose.Types.ObjectId(id), user1: {$in: mappedUser}}
-                        ]
-                    }, { sort: {_id: -1}, limit: 1},
-                    (err, results) => {
-                        if(err){
-                            console.log(err)
+            const lastestMessages = []
+            for(let i = 0; i < friends.length; i++){
+
+                const friendId = friends[i].user1.equals(id) ? friends[i].user2 : friends[i].user1
+
+                const userInfo = await accountModel.findOne({
+                    _id: friendId
+                },
+                {password: 0})
+
+                const lastMess = await messageModel.findOne({
+                    $or: [
+                        {
+                            user1: friendId,
+                            user2: id
+                        },
+                        {
+                            user1: id,
+                            user2: friendId
                         }
-                        else{
-                            
-                            accountModel.find(
-                                {_id: {$in: mappedUser}},
-                                {password: 0, birthday: 0, email: 0, phoneNumber: 0}
-                                , (err, accountResults) => {
-                                if(err)
-                                    console.log(err)
-                                return res.send(
-                                    JSON.stringify(
-                                        { message: results, friends: accountResults }
-                                    )
-                                )
-                            })
-                        }
-                    }
-                )
+                    ]
+                },{},{sort: {_id: -1}})
+
+                lastestMessages.push({
+                    user: userInfo,
+                    lastMess: lastMess
+                })
             }
-        })
+            
+            return res.send(JSON.stringify({ friends: lastestMessages }))
+        } catch (error) {
+            return res.send(JSON.stringify({status: 500, message: error}))
+        }
     }
 
     addMessage(req,res) {
@@ -203,22 +223,25 @@ class userController {
     searchUser(req,res) {
         const info = req.params.info
 
-        accountModel.find({$or: 
-            [{email: 
-                {
-                    $regex: info
-                }
-            }, 
-            {phoneNumber: 
-                {
-                    $regex: info
-                }
-            }]}, 
-            {firstName: 1, lastName: 1, email: 1}, (err, results) => {
-                if(err)
-                    return res.send(JSON.stringify({status: 400}))
-                return res.send(JSON.stringify(results))
-            })
+        accountModel.find(
+            {$or: 
+                [{email: 
+                    {
+                        $regex: info
+                    }
+                }, 
+                {phoneNumber: 
+                    {
+                        $regex: info
+                    }
+                }]
+        }
+        ,
+        {firstName: 1, lastName: 1, email: 1}, (err, results) => {
+            if(err)
+                return res.send(JSON.stringify({status: 400}))
+            return res.send(JSON.stringify(results))
+        })
     }
 
     async getFriendRequest(req,res) {
@@ -253,7 +276,7 @@ class userController {
         friendRequest.create({sender: mongoose.Types.ObjectId(user), receiver: mongoose.Types.ObjectId(friend)}, (err,results) => {
             if(err) return res.send(JSON.stringify({status: 400}))
             
-            res.io.to(friend).emit('receive-friendRequest', 'reload')
+            res.io.to(friend).emit('receive-request', "new request")
             return res.send(JSON.stringify({status: 200}))
         })
     }
@@ -371,7 +394,8 @@ class userController {
                 user2: receiver
             })
 
-            res.send(JSON.stringify({status: 200, results: friendResult}))
+            res.io.to(sender).emit('friend-accepted', 'accepted')
+            return res.send(JSON.stringify({status: 200, results: friendResult}))
         } catch (error) {
             res.send(JSON.stringify({status: 500, err: error}))
         }

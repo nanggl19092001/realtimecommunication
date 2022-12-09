@@ -3,8 +3,11 @@ import { SERVER_IP } from '../constaint'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import { useNavigation } from '@react-navigation/native'
 
 const Register = () => {
+
+  const navigation = useNavigation()
 
   const [ firstName, setFirstName ] = useState("")
   const [ lastName, setLastName ] = useState("")
@@ -36,6 +39,7 @@ const Register = () => {
   };
 
   const handleSubmit = () => {
+
     if(!firstName || !lastName || !date || !email || !phoneNumber || !password || !confirmPassword){
       return setError("Please fill out all infomation !")
     }
@@ -62,12 +66,13 @@ const Register = () => {
       .then(res => {
         if(res.status != 200)
         {
-          setError(res.message)
+          return setError(res.message)
         }
+        navigation.goBack()
       })
       
     } catch (error) {
-      console.log(err)
+      console.log(error)
     }
   }
 
@@ -120,10 +125,12 @@ const Register = () => {
           style={styles.textInput}
           value={password}
           placeholder={"Password"}
+          secureTextEntry={true}
           onChangeText = {(input) => setPassword(input)}/>
         <TextInput 
           style={styles.textInput}
           value={confirmPassword}
+          secureTextEntry={true}
           placeholder={"Confirm Password"}
           onChangeText = {(input) => setConfirmPassword(input)}/>
         

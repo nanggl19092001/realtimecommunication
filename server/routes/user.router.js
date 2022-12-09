@@ -16,6 +16,8 @@ Router.post('/message', userController.addMessage)
 
 Router.get('/message', userController.getMessage)
 
+Router.put('/message', userController.readMessage)
+
 Router.get('/friends/:id', userController.getFriends)
 
 Router.delete('/friend', userController.unfriend)

@@ -7,8 +7,6 @@ import Header from '../components/Header'
 import Searchbar from '../components/Searchbar'
 import Buttons from '../components/Buttons'
 import Friends from '../components/Friends'
-import Contact from '../components/Contact'
-import { SERVER_IP } from '../constaint'
 
 const Home = ({navigation, route}) => {
 

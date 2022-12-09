@@ -1,6 +1,9 @@
-import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SERVER_IP } from '../constaint'
+import Icon from 'react-native-vector-icons/Ionicons'
+
+const IconArrowBack = <Icon name="arrow-back" size={25} color={"white"}></Icon>
 
 const StatusBar = ({navigation, user, friend}) => {
 
@@ -16,16 +19,19 @@ const StatusBar = ({navigation, user, friend}) => {
         <View
         style={styles.container}>
             <TouchableHighlight
+            style={styles.backArrow}
             onPress={handleGoBack}>
-                <Text style={styles.friendName}>Back</Text>
+                <View>
+                    {IconArrowBack}
+                </View>
             </TouchableHighlight>
                 <Image style={styles.friendAvatar}
                     source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg`}}
                 ></Image>
-            <TouchableHighlight
+            <TouchableOpacity
             onPress={handleNavigateProfile}>  
                 <Text style={styles.friendName}>{`${friend.lastName} ${friend.firstName}`}</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
         </View>
         <View></View>
     </View>
@@ -47,6 +53,10 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    backArrow: {
+        borderRadius: 30,
+        padding: 5
     },
     friendAvatar: {
         width: 40,

@@ -2,28 +2,54 @@ import { View, Text, TouchableHighlight, Image, StyleSheet } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
 import { SERVER_IP } from '../constaint'
+import LastestText from './LastestText'
+import socketIO from '../utils/socketIO'
 
 const Friends = ({navigation, user}) => {
 
   const [ conversation, setConversation ] = useState()
+  const [ refresh, setRefresh ] = useState(false)
 
   useFocusEffect(
     React.useCallback(() => {
       fetch(`${SERVER_IP}/user/conversation/${user}`)
       .then(res => res.json())
       .then(res => {
-        const friends = res.friends.map((f) => {
-          return {_id: f._id, firstName: f.firstName, lastName: f.lastName}
+
+        const friends = res.friends.sort(function(a,b){
+          if(!a.lastMess || !b.lastMess){
+            return 1
+          }
+          const datea = new Date(a.lastMess.sentDate)
+          const dateb = new Date(b.lastMess.sentDate)
+          return dateb - datea
         })
+
         setConversation(friends)
       })
-    }, [])
+    }, [refresh])
   )
+
+  useEffect(() => {
+    
+    socketIO.emit('join', user)
+    socketIO.on('receive-message', (sender, message) => {
+      setRefresh(!refresh)
+    })
+    
+    socketIO.on('friend-accepted', () => {
+      setRefresh(!refresh)
+    })
+
+    return () => {
+      socketIO.removeAllListeners()
+    }
+  })
 
   const handleToConversation = (con) => {
     navigation.navigate("Conversation", {
       user: user,
-      friend: con
+      friend: con.user
     })
   }
 
@@ -42,9 +68,10 @@ const Friends = ({navigation, user}) => {
             >
               <View style={styles.friendsContainer}>
                 <Image style={styles.friendsAvatar}
-                source={{uri: `${SERVER_IP}/public/avatar/${con._id}.jpg`}}></Image>
+                source={{uri: `${SERVER_IP}/public/avatar/${con.user._id}.jpg`}}></Image>
                 <View>
-                  <Text style={styles.friendsName}>{`${con.lastName} ${con.firstName}`}</Text>
+                  <Text style={styles.friendsName}>{`${con.user.lastName} ${con.user.firstName}`}</Text>
+                  <LastestText message = {con.lastMess} user = {user}/>
                 </View>
               </View>  
             </TouchableHighlight>
@@ -63,9 +90,9 @@ const styles = new StyleSheet.create(
       marginLeft: 20
     },
     friendsAvatar: {
-      width: 40,
-      height: 40,
-      borderRadius: 40
+      width: 50,
+      height: 50,
+      borderRadius: 50
     },
     friendsContainer: {
       flexDirection: 'row',

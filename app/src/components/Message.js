@@ -20,7 +20,6 @@ const Message = ({user, friend}) => {
   useEffect(() => {
     socketIO.emit('join', user)
     socketIO.on('receive-message', payload => {
-      console.log(payload)
       if(payload.sender == friend._id){
         const newMessage = [...message, payload.message]
         setMessage(newMessage)

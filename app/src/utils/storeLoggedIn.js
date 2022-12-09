@@ -4,7 +4,10 @@ import { Alert } from "react-native";
 async function storeLoggedIn(navigation, _id) {
     try{
         await AsyncStore.setItem("id", _id);
-        navigation.navigate('Home', {_id: _id})
+        navigation.navigate('Tab Activities', {
+            screen: 'Home',
+            params: {_id: _id}
+        })
     }
     catch (e) {
         Alert.alert("Error! localstorage")

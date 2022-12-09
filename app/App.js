@@ -9,20 +9,50 @@ import UserOptions from './src/activities/UserOptions'
 import ChangePassword from './src/activities/ChangePassword'
 import Conversation from './src/activities/Conversation'
 import FriendRequest from './src/activities/FriendRequest'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import FriendList from './src/activities/FriendList'
+
+function tabBarHomeIcon() {
+  return <Icon name="home" size={30} color={"black"}></Icon>
+}
+
+function friendListIcon() {
+  return <MaterialCommunityIcons name="account-group" size={30} color="black"></MaterialCommunityIcons>
+}
 
 const Stack = createNativeStackNavigator()
-const Tab = createBottomTabNavigator()
+const Tab = createMaterialBottomTabNavigator()
 
 function TabActivities() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator 
+    activeColor="#f0edf6"
+    inactiveColor="#3e2465"
+    shifting={true}
+    barStyle={{ 
+      backgroundColor: 'white',
+      padding: 5,
+      width: "100%",
+      height: 70
+    }}>
       <Tab.Screen 
       name="Home" 
       component={Home}
       options={{
-        headerShown: false
-      }}/>
+        tabBarIcon: tabBarHomeIcon,
+        tabBarColor: "white",
+      }}
+      />
+      <Tab.Screen 
+      name="Friends" 
+      component={FriendList}
+      options={{
+        tabBarIcon: friendListIcon,
+        tabBarLabel: "Friend List"
+      }}
+      />
     </Tab.Navigator>
   )
 }

@@ -1,19 +1,32 @@
 import { View, Text, TextInput, StyleSheet, TouchableHighlight } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { SERVER_IP } from '../constaint'
+import { useFocusEffect } from '@react-navigation/native'
 
 const Searchbar = ({navigation, user}) => {
+
   const [ searchText, setSearchText ] = useState("")
   const [ searchResult, setSearchResult] = useState([])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setSearchText("")
+      setSearchResult("")
+    }, [])
+  )
 
   const handleSearchText = (text) => {
     setSearchText(text)
   }
 
   const handleProfile = (id) => {
-    navigation.navigate('Profile', {id: id, user: user})
+    if(id == user){
+      return navigation.navigate('UserOptions', {user: user})
+    }
+    else{
+      return navigation.navigate('Profile', {id: id, user: user})
+    }
   }
 
   useEffect(() => {
@@ -41,8 +54,6 @@ const Searchbar = ({navigation, user}) => {
         {
           searchResult ?
           searchResult.map((result) => 
-
-              
                 <TouchableHighlight
                   onPress={() => handleProfile(result._id)}
                   key={result._id}>

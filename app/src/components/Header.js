@@ -1,7 +1,16 @@
-import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
+import { StyleSheet, View, Text, Image, TouchableHighlight, Button } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import { SERVER_IP } from '../constaint'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import socketIO from '../utils/socketIO'
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
+function FriendRequestIcon(){
+return <Icon name="user-friends" size={20} color="white"/>;
+}
+
+
+
 
 const Header = ({navigation, user}) => {
 
@@ -16,19 +25,26 @@ const Header = ({navigation, user}) => {
     navigation.navigate('Friend Request', {user: user})
   }
 
-  useEffect(() => {
-    socketIO.on('receive-friend-request', (message) => {
-      setRefreshRequest(!refreshRequest)
-    })
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      fetch(`${SERVER_IP}/user/friendrequest/${user}`)
+      .then(res => res.json())
+      .then(res => {
+        setRequestCount(res.length)
+      })
+    }, [refreshRequest])
+  )
 
   useEffect(() => {
-    fetch(`${SERVER_IP}/user/friendrequest/${user}`)
-    .then(res => res.json())
-    .then(res => {
-      setRequestCount(res.length)
+    socketIO.emit('join', user)
+    socketIO.on('receive-request', () => {
+      setRefreshRequest(!refreshRequest)
     })
-  }, [refreshRequest])
+
+    return () => {
+      socketIO.removeAllListeners()
+    }
+  })
 
   return (
     <View style={style.container}>
@@ -37,10 +53,10 @@ const Header = ({navigation, user}) => {
         <TouchableHighlight
         onPress={handleFriendRequest}>
           <View>
-            <Image
-              style={style.friendRequest}
-            >
-            </Image>
+            <View style={style.friendRequest}>
+              <FriendRequestIcon />
+            </View>
+            
             {
               requestCount == 0 ?
               <></> :
@@ -82,11 +98,11 @@ const style = StyleSheet.create({
       flexDirection: 'row'
     },
     friendRequest: {
-      width: 40,
-      height: 40,
-      backgroundColor: 'white',
       borderRadius: 40,
-      marginRight: 10
+      marginRight: 10,
+      borderWidth: 2,
+      borderColor: 'white',
+      padding: 7
     },
     requestCount: {
       backgroundColor: 'red',
@@ -100,4 +116,6 @@ const style = StyleSheet.create({
       textAlign: 'center'
     }
 })
+
+
 export default Header

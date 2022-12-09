@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SERVER_IP } from '../constaint'
 import formatDate from '../utils/formatDate'
+import socketIO from '../utils/socketIO'
 
 const FriendRequest = ({navigation, route}) => {
 
@@ -15,6 +16,17 @@ const FriendRequest = ({navigation, route}) => {
             setRequest(res)
         })
     }, [refresh])
+
+    useEffect(() => {
+        socketIO.emit('join', route.params.user)
+        socketIO.on('receive-request', () => {
+            setRefresh(!refresh)
+        })
+
+        return () => {
+            socketIO.removeAllListeners()
+        }
+    })
 
     const handleAccept = (requestId, sender, receiver) => {
         fetch(`${SERVER_IP}/user/friend`, {
