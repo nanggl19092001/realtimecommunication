@@ -1,4 +1,5 @@
 const express = require('express')
+const { addFileMessage } = require('../controllers/user.controller')
 const Router = express.Router()
 const userController = require('../controllers/user.controller')
 
@@ -13,6 +14,8 @@ Router.get('/conversation/:id', userController.getConversation)
 Router.get('/searchuser/:info', userController.searchUser)
 
 Router.post('/message', userController.addMessage)
+
+Router.post('/filemessage', addFileMessage)
 
 Router.get('/message', userController.getMessage)
 

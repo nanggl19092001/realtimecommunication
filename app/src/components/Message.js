@@ -8,8 +8,8 @@ import socketIO from '../utils/socketIO'
 
 const Message = ({user, friend}) => {
 
-  const { message, setMessage } = useContext(MessageContext)
-  const receiveMess = message
+  const { message, setMessage, refresh, setRefresh } = useContext(MessageContext)
+  
 
   const scrollViewRef = useRef();
   const [ limit, setLimit] = useState(15)
@@ -35,10 +35,11 @@ const Message = ({user, friend}) => {
     fetch(`${SERVER_IP}/user/message?a=${user}&b=${friend._id}&limit=${limit}`)
     .then(res => res.json())
     .then(res => {
+      console.log(res)
       setLoading(false)
       setMessage(res.reverse())
     })
-  }, [limit])
+  }, [limit, refresh])
 
   const handleScrollToTop = (offset) => {
     if(offset == 0 && message.length >= limit){
@@ -47,11 +48,12 @@ const Message = ({user, friend}) => {
     }
   }
 
-  const items = ({message, user1, user2}, idx) => {
+  const items = ({message, user1, user2, messageType, _id}, idx) => {
+
     if(user1 == user)
-      return <SenderMessage key={idx} message = {message} user = {user1}/>
+      return <SenderMessage key={idx} message = {message} user = {user1} messageType = {messageType} id={_id}/>
     else
-      return <ReceiverMessage key={idx} message = {message} user = {user2}/>
+      return <ReceiverMessage key={idx} message = {message} user = {user2} messageType = {messageType} id={_id}/>
   }
 
   return (

@@ -5,6 +5,9 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {SERVER_IP} from '../constaint'
 import storeLoggedIn from '../utils/storeLoggedIn'
 import getLoggedIn from '../utils/getLoggedIn'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
+const chatIcon = <Ionicons name="chatbubbles" size={70} color={"white"}></Ionicons>
 
 const Login = ({navigation}) => {
 
@@ -97,7 +100,9 @@ const Login = ({navigation}) => {
         </View>
         :
         <View style={style.loadingScreen}>
-            <Text style={style.loadingText}>Text</Text>
+            {chatIcon}
+            <Text style={style.loadingText}>Nguyen Huu Nang</Text>
+            <Text style={style.loadingText}>51900764</Text>
         </View>
     }
     </>

@@ -3,6 +3,9 @@ const friendRequest = require('../models/friendRequest')
 const friendModel = require('../models/friend.model')
 const messageModel = require('../models/message.model')
 const { default: mongoose } = require('mongoose')
+const { MulterError } = require('multer')
+const multer = require('multer')
+const upload = require('../middlewares/upload').fields([{name: "file", maxCount: 1}])
 class userController {
 
     readMessage(req, res) {
@@ -45,6 +48,7 @@ class userController {
             },[],
             { sort: { _id: -1 }, limit: limit}
             ,(err, results) => {
+                console.log(results)
                 if(err) 
                     return res.send(JSON.stringify({status: 500}))
                 else {
@@ -124,19 +128,16 @@ class userController {
 
     addFileMessage(req,res) {
 
-        const {sender, receiver} = req.body
-
-        messageModel.create({
-            user1: sender,
-            user2: receiver,
-            message: message,
-            messageType: 'file'
-        }
-        ,(err, results) => {
-            if(err)
-                return res.send(JSON.stringify({status: 500}))
-            else
-                return res.send(JSON.stringify({status: 200}))
+        upload(req,res, (err) => {
+            if(err instanceof MulterError){
+                console.log("MulterError"+ err)
+            }
+            else if (err){
+                console.log(err)
+            }
+            else{
+                res.send(JSON.stringify({status: 200}))
+            }
         })
     }
 

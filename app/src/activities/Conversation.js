@@ -9,27 +9,28 @@ import { SERVER_IP } from '../constaint'
 const Conversation = ({navigation, route}) => {
 
   const [ message, setMessage ] = useState([])
+  const [ refresh, setRefresh ] = useState(true)
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    fetch(`${SERVER_IP}/user/message`, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        user: route.params.user,
-        friend: route.params.friend._id
-      })
-    }).then(res => res.json())
-    .then(res => {
-      return
-    })
-  }, [])
+  //   fetch(`${SERVER_IP}/user/message`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       user: route.params.user,
+  //       friend: route.params.friend._id
+  //     })
+  //   }).then(res => res.json())
+  //   .then(res => {
+  //     return
+  //   })
+  // }, [])
 
   return (
     <View style={styles.container} >
-      <MessageContext.Provider value = {{message, setMessage}}>
+      <MessageContext.Provider value = {{message, setMessage, refresh, setRefresh}}>
         <StatusBar navigation = {navigation} user = {route.params.user} friend = {route.params.friend}/>
         <Message user = {route.params.user} friend = {route.params.friend}/>
         <TextBar user = {route.params.user} friend = {route.params.friend}/>

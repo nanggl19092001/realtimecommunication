@@ -13,7 +13,7 @@ const sendIcon = <Feather name="send" size={30} color="white"></Feather>
 
 const TextBar = ({user, friend}) => {
 
-    const { message, setMessage } = useContext(MessageContext) 
+    const { message, setMessage, refresh, setRefresh } = useContext(MessageContext) 
     const [ text, setText ] = useState("")
 
     const handleDocumentSelection = useCallback(async () => {
@@ -23,7 +23,26 @@ const TextBar = ({user, friend}) => {
             })
 
             if(response[0]){
-              console.log(response)
+              const data = new FormData()
+
+              data.append("sender", user)
+              data.append("receiver", friend._id)
+              data.append("filetype", response[0].type)
+              data.append("file",response[0])
+
+              fetch(`${SERVER_IP}/user/filemessage`, {
+                method: 'post',
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                },
+                body: data,
+              }).then(res => res.json())
+              .then(res => {
+                if(res.status == 200){
+                  setRefresh(!refresh)
+                }
+
+              })
             }
         }
         catch (err) {
