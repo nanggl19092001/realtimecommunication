@@ -6,14 +6,16 @@ const LastestText = ({message, user}) => {
         return (
         <Text style={styles.notRead}>{`${messageFormat(message)}`}</Text>
         )
-
-    if(message.read || message.user1 == user)
+    if(message.read || message.user1 == user){
         return (
             <Text style={styles.read}>{`${messageFormat(message)}`}</Text>
         )
-    return (
-        <Text style={styles.notRead}>{`${messageFormat(message)}`}</Text>
-    )
+    }
+    else {
+        return (
+            <Text style={styles.notRead}>{`${messageFormat(message)}`}</Text>
+        )
+    }
 }
 
 export default LastestText

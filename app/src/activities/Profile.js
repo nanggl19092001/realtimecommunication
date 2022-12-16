@@ -71,14 +71,18 @@ const Profile = ({navigation, route}) => {
         {
           loading ? <></> :
             pendingFriendRequest ? 
-            <Button title='Pending'
+            <Button 
+            style={styles.button}
+            title='Pending'
             disabled={true}>
             </Button>:
             isFriend ? 
             <Button
+            style={styles.button}
               title='Un Friend'
               onPress={handleUnfriend}/> : 
             <Button
+            style={styles.button}
               title='Add Friend'
               onPress={handleAddFriend}/>
           

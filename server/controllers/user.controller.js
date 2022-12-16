@@ -48,7 +48,6 @@ class userController {
             },[],
             { sort: { _id: -1 }, limit: limit}
             ,(err, results) => {
-                console.log(results)
                 if(err) 
                     return res.send(JSON.stringify({status: 500}))
                 else {
@@ -127,7 +126,7 @@ class userController {
     }
 
     addFileMessage(req,res) {
-
+        req.io = res.io
         upload(req,res, (err) => {
             if(err instanceof MulterError){
                 console.log("MulterError"+ err)
@@ -136,6 +135,7 @@ class userController {
                 console.log(err)
             }
             else{
+                
                 res.send(JSON.stringify({status: 200}))
             }
         })
@@ -206,7 +206,6 @@ class userController {
 
     getFriends(req,res) {
         const id = req.params.id
-        console.log(id)
 
         friendModel.find(
             {
@@ -360,7 +359,6 @@ class userController {
                 return res.send(JSON.stringify({status: 500}))
             }
             else{
-                console.log(results)
                 return res.send(JSON.stringify({status: 200}))
             }
         })

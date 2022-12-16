@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SERVER_IP } from '../constaint'
 
-const ReceiverMessage = ({message, user, messageType, id}) => {
+const ReceiverMessage = ({message, user, messageType, id, downloadImage}) => {
     
     
     if(messageType == "text"){
@@ -21,8 +21,13 @@ const ReceiverMessage = ({message, user, messageType, id}) => {
                 <Image
                     style={styles.userAvatar}
                     source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg`}}/>
-                <Image 
-        source={{uri: `${SERVER_IP}/public/messageImage/${id}.${messageType.split('/')[1]}`}}></Image>
+                <TouchableOpacity
+                onLongPress={() => downloadImage(`${SERVER_IP}/public/messageImage/${id}.${messageType.split('/')[1]}`)}>
+                    <Image 
+                    style={{width: "60%", height: undefined, aspectRatio: 135 / 76, marginLeft: 20}}
+                    source={{uri: `${SERVER_IP}/public/messageImage/${id}.${messageType.split('/')[1]}`}}
+                    ></Image>
+                </TouchableOpacity>
             </View>
           )
     }

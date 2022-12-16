@@ -24,7 +24,7 @@ const FriendRequest = ({navigation, route}) => {
         })
 
         return () => {
-            socketIO.removeAllListeners()
+            socketIO.removeListener('receive-request')
         }
     })
 

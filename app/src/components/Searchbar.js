@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableHighlight } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableHighlight, Image } from 'react-native'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { SERVER_IP } from '../constaint'
@@ -58,13 +58,14 @@ const Searchbar = ({navigation, user}) => {
                   onPress={() => handleProfile(result._id)}
                   key={result._id}>
                   <View style={style.userProfile}>
+                    <Image
+                    style={style.avatar}
+                    source={{uri: `${SERVER_IP}/public/avatar/${result._id}.jpg`}}/>
                     <Text style={style.name} >
                       {result.firstName + " " + result.lastName}
                     </Text>
                   </View>
                 </TouchableHighlight>
-              
-            
           )
           :
           <></>
@@ -80,6 +81,12 @@ const style = StyleSheet.create({
   container: {
     paddingHorizontal: 10
   },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 40
+  }
+  ,
   searchInput: {
     paddingLeft: 10,
     backgroundColor: '#9F91B4',
@@ -89,7 +96,8 @@ const style = StyleSheet.create({
     position: 'absolute'
   },
   name: {
-    color: 'black'
+    color: 'black',
+    marginLeft: 20
   },
   userProfile:
   {

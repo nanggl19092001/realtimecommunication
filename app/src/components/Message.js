@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState, useRef, useContext } from 'react'
+import Dialog from 'react-native-dialog'
 import { SERVER_IP } from '../constaint'
 import ReceiverMessage from './ReceiverMessage'
 import SenderMessage from './SenderMessage'
@@ -14,11 +15,11 @@ const Message = ({user, friend}) => {
   const scrollViewRef = useRef();
   const [ limit, setLimit] = useState(15)
   const [ loading, setLoading ] = useState(true)
+  const [ downloadDialog, setDownloadDialog] = useState(null)
 
   
 
   useEffect(() => {
-    socketIO.emit('join', user)
     socketIO.on('receive-message', payload => {
       if(payload.sender == friend._id){
         const newMessage = [...message, payload.message]
@@ -27,7 +28,7 @@ const Message = ({user, friend}) => {
     })
 
     return () => {
-      socketIO.removeAllListeners()
+      socketIO.removeListener('receive-message')
     }
   })
 
@@ -35,7 +36,6 @@ const Message = ({user, friend}) => {
     fetch(`${SERVER_IP}/user/message?a=${user}&b=${friend._id}&limit=${limit}`)
     .then(res => res.json())
     .then(res => {
-      console.log(res)
       setLoading(false)
       setMessage(res.reverse())
     })
@@ -51,9 +51,9 @@ const Message = ({user, friend}) => {
   const items = ({message, user1, user2, messageType, _id}, idx) => {
 
     if(user1 == user)
-      return <SenderMessage key={idx} message = {message} user = {user1} messageType = {messageType} id={_id}/>
+      return <SenderMessage key={idx} message = {message} user = {user1} messageType = {messageType} id={_id} downloadImage = {setDownloadDialog}/>
     else
-      return <ReceiverMessage key={idx} message = {message} user = {user2} messageType = {messageType} id={_id}/>
+      return <ReceiverMessage key={idx} message = {message} user = {user2} messageType = {messageType} id={_id} downloadImage = {setDownloadDialog}/>
   }
 
   return (
@@ -75,6 +75,15 @@ const Message = ({user, friend}) => {
           <></>
         }
       </ScrollView>
+      <Dialog.Container visible={downloadDialog ? true : false}>
+        <Dialog.Title>Download Image</Dialog.Title>
+        <Dialog.Description>
+          Do you want to download this image ?
+        </Dialog.Description>
+        <Dialog.Button label="Cancel" 
+        onPress={() => setDownloadDialog(null)}/>
+        <Dialog.Button label="Download" />
+      </Dialog.Container>
     </View>
   )
 }

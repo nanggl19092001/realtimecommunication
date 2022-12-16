@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const {ExpressPeerServer} = require('peer')
 const connection = require('./database')
 const routes = require('./routes/index.router')
 const app = express()
@@ -15,6 +16,11 @@ const socketIO = require('socket.io')(http, {
     cors: '*'
 })
 
+const peerServer = ExpressPeerServer(http, {
+    debug: true,
+    path: '/call'
+})
+
 const cors = require('cors')
 
 app.use((req, res, next) => {
@@ -22,12 +28,19 @@ app.use((req, res, next) => {
     next()
 })
 
+app.use('/call', peerServer)
+
 app.use(cors())
 
 socketIO.on('connection', (socket) => {
 
     socket.on('join', (id) => {
         socket.join(id)
+    })
+
+    socket.on('call', ({sender, receiver}) => {
+        console.log(sender)
+        socket.to(receiver).emit('receive-call', sender)
     })
 
     socket.on('disconnect', () => {

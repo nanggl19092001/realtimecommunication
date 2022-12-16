@@ -2,8 +2,11 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity } f
 import React from 'react'
 import { SERVER_IP } from '../constaint'
 import Icon from 'react-native-vector-icons/Ionicons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 const IconArrowBack = <Icon name="arrow-back" size={25} color={"white"}></Icon>
+
+const videoCallIcon = <FontAwesome5 name="video" size={30} color={"white"}></FontAwesome5>
 
 const StatusBar = ({navigation, user, friend}) => {
 
@@ -14,6 +17,11 @@ const StatusBar = ({navigation, user, friend}) => {
     const handleGoBack = () => {
         navigation.goBack()
     }
+
+    const handleCall = () => {
+        navigation.navigate('Call', {user: user, friend: friend, receive: false})
+    }
+    
   return (
     <View style={styles.StatusBarContainer}>
         <View
@@ -32,8 +40,16 @@ const StatusBar = ({navigation, user, friend}) => {
             onPress={handleNavigateProfile}>  
                 <Text style={styles.friendName}>{`${friend.lastName} ${friend.firstName}`}</Text>
             </TouchableOpacity>
+            
         </View>
-        <View></View>
+            <TouchableOpacity 
+            style={styles.callButton}
+            onPress={
+                handleCall
+            }
+            >
+                {videoCallIcon}
+            </TouchableOpacity>
     </View>
   )
 }
@@ -48,7 +64,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#251B37',
         paddingLeft: 10,
         paddingRight: 20,
-        paddingVertical: 10
+        paddingVertical: 10,
     },
     container: {
         flexDirection: 'row',
@@ -69,5 +85,8 @@ const styles = StyleSheet.create({
         color: 'white',
         marginLeft: 20,
         fontWeight: 'bold'
+    },
+    callButton: {
+        alignSelf: "center"
     }
 })

@@ -13,13 +13,14 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FriendList from './src/activities/FriendList'
+import VideoCall from './src/activities/Calling'
 
-function tabBarHomeIcon() {
-  return <Icon name="home" size={30} color={"black"}></Icon>
+function tabBarHomeIcon(color) {
+  return <Icon name="home" size={30} color={color}></Icon>
 }
 
-function friendListIcon() {
-  return <MaterialCommunityIcons name="account-group" size={30} color="black"></MaterialCommunityIcons>
+function friendListIcon(color) {
+  return <MaterialCommunityIcons name="account-group" size={30} color={color}></MaterialCommunityIcons>
 }
 
 const Stack = createNativeStackNavigator()
@@ -28,8 +29,8 @@ const Tab = createMaterialBottomTabNavigator()
 function TabActivities() {
   return (
     <Tab.Navigator 
-    activeColor="#f0edf6"
-    inactiveColor="#3e2465"
+    activeColor="black"
+    inactiveColor="gray"
     shifting={true}
     barStyle={{ 
       backgroundColor: 'white',
@@ -41,7 +42,7 @@ function TabActivities() {
       name="Home" 
       component={Home}
       options={{
-        tabBarIcon: tabBarHomeIcon,
+        tabBarIcon: ({color}) => tabBarHomeIcon(color),
         tabBarColor: "white",
       }}
       />
@@ -49,7 +50,7 @@ function TabActivities() {
       name="Friends" 
       component={FriendList}
       options={{
-        tabBarIcon: friendListIcon,
+        tabBarIcon: ({color}) => friendListIcon(color),
         tabBarLabel: "Friend List"
       }}
       />
@@ -151,6 +152,23 @@ function App() {
               {
                 headerShown: true,
                 headerTitle: 'Profile',
+                headerStyle: {
+                  backgroundColor: '#251B37',
+                },
+                headerTitleStyle: {
+                  color: 'white'
+                },
+                headerTintColor: "white"
+              }
+            }
+          />
+          <Stack.Screen
+            name="Call"
+            component={VideoCall}
+            options={
+              {
+                headerShown: true,
+                headerTitle: 'Calling',
                 headerStyle: {
                   backgroundColor: '#251B37',
                 },

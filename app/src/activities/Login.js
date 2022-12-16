@@ -9,6 +9,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const chatIcon = <Ionicons name="chatbubbles" size={70} color={"white"}></Ionicons>
 
+const chatIconForm = <Ionicons name="chatbubbles" size={120} color={"black"}></Ionicons>
+
 const Login = ({navigation}) => {
 
     const [email, setEmail] = useState('')
@@ -64,7 +66,7 @@ const Login = ({navigation}) => {
         <View style={style.container}>
             <SafeAreaView style={{height: '100%'}}>       
                 <View style={style.label}>
-                    <Text>Login</Text>
+                    {chatIconForm}
                 </View>
                 <View style={style.content}>
                     <TextInput 

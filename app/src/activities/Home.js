@@ -7,10 +7,19 @@ import Header from '../components/Header'
 import Searchbar from '../components/Searchbar'
 import Buttons from '../components/Buttons'
 import Friends from '../components/Friends'
+import socketIO from '../utils/socketIO'
 
 const Home = ({navigation, route}) => {
 
   ToastAndroid.showWithGravity(route.params._id, ToastAndroid.SHORT, ToastAndroid.CENTER)
+
+  useEffect(() => {
+
+    socketIO.emit('join', route.params._id)
+    socketIO.on('receive-call', (friend) => {
+      navigation.navigate('Call', {user: route.params._id, friend: friend, receive: true})
+    })
+  }, [])
 
   return (
     <View style={style.container}>

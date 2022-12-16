@@ -18,7 +18,7 @@ const Friends = ({navigation, user}) => {
 
         const friends = res.friends.sort(function(a,b){
           if(!a.lastMess || !b.lastMess){
-            return 1
+            return -10000000
           }
           const datea = new Date(a.lastMess.sentDate)
           const dateb = new Date(b.lastMess.sentDate)
@@ -32,7 +32,6 @@ const Friends = ({navigation, user}) => {
 
   useEffect(() => {
     
-    socketIO.emit('join', user)
     socketIO.on('receive-message', (sender, message) => {
       setRefresh(!refresh)
     })
@@ -42,7 +41,8 @@ const Friends = ({navigation, user}) => {
     })
 
     return () => {
-      socketIO.removeAllListeners()
+      socketIO.removeListener('receive-message')
+      socketIO.removeListener('friend-accepted')
     }
   })
 

@@ -11,22 +11,22 @@ const Conversation = ({navigation, route}) => {
   const [ message, setMessage ] = useState([])
   const [ refresh, setRefresh ] = useState(true)
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   fetch(`${SERVER_IP}/user/message`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       user: route.params.user,
-  //       friend: route.params.friend._id
-  //     })
-  //   }).then(res => res.json())
-  //   .then(res => {
-  //     return
-  //   })
-  // }, [])
+    fetch(`${SERVER_IP}/user/message`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: route.params.user,
+        friend: route.params.friend._id
+      })
+    }).then(res => res.json())
+    .then(res => {
+      return
+    })
+  }, [])
 
   return (
     <View style={styles.container} >

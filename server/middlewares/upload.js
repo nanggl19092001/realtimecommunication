@@ -16,16 +16,18 @@ const storage = multer.diskStorage({
 
         const sender = req.body.sender
         const receiver = req.body.receiver
-        
-        const result = await messageModel.create({
+        const io = req.io
+
+        const message = await messageModel.create({
             user1: sender,
             user2: receiver,
             message: "file",
             messageType: file.mimetype
         })
         
+        io.to(receiver).emit('receive-message', {sender, message})
         const extension = file.mimetype.split("/")[1]
-        cb(null, result._id + "." + extension)
+        cb(null, message._id + "." + extension)
     }
 })
 

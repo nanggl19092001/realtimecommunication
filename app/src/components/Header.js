@@ -36,13 +36,12 @@ const Header = ({navigation, user}) => {
   )
 
   useEffect(() => {
-    socketIO.emit('join', user)
     socketIO.on('receive-request', () => {
       setRefreshRequest(!refreshRequest)
     })
 
     return () => {
-      socketIO.removeAllListeners()
+      socketIO.removeListener('receive-request')
     }
   })
 
