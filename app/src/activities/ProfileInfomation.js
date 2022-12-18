@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Calling = ({user, friend}) => {
+const ProfileInfomation = ({navigation, route}) => {
   return (
     <View>
-      <Text>Calling</Text>
+      <Text>ProfileInfomation</Text>
     </View>
   )
 }
 
-export default Calling
+export default ProfileInfomation
 
 const styles = StyleSheet.create({})

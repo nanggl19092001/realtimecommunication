@@ -44,6 +44,10 @@ const Register = () => {
       return setError("Please fill out all infomation !")
     }
 
+    if(!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)){
+      return setError("Invalid email")
+    }
+
     if(password != confirmPassword) {
       return setError("Confirm password is not correct")
     }

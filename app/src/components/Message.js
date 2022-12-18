@@ -13,6 +13,8 @@ const Message = ({user, friend}) => {
   
 
   const scrollViewRef = useRef();
+
+  const [ showDate, setShowDate ] = useState([])
   const [ limit, setLimit] = useState(15)
   const [ loading, setLoading ] = useState(true)
   const [ downloadDialog, setDownloadDialog] = useState(null)
@@ -38,6 +40,7 @@ const Message = ({user, friend}) => {
     .then(res => {
       setLoading(false)
       setMessage(res.reverse())
+      console.log(res[0])
     })
   }, [limit, refresh])
 
@@ -48,12 +51,33 @@ const Message = ({user, friend}) => {
     }
   }
 
-  const items = ({message, user1, user2, messageType, _id}, idx) => {
-
+  const items = ({message, user1, user2, messageType, _id, sentDate}, idx) => {
+    
+    let show = null
+    if(showDate.includes(idx))
+      show = sentDate
     if(user1 == user)
-      return <SenderMessage key={idx} message = {message} user = {user1} messageType = {messageType} id={_id} downloadImage = {setDownloadDialog}/>
+      return <SenderMessage
+      key={idx} 
+      idx={idx}
+      message = {message} 
+      user = {user1} 
+      messageType = {messageType} 
+      id={_id} 
+      downloadImage = {setDownloadDialog}
+      show = {show}
+      setShowDate = {setShowDate}/>
     else
-      return <ReceiverMessage key={idx} message = {message} user = {user2} messageType = {messageType} id={_id} downloadImage = {setDownloadDialog}/>
+      return <ReceiverMessage 
+      key={idx} 
+      idx={idx}
+      message = {message} 
+      user = {user2} 
+      messageType = {messageType} 
+      id={_id} 
+      downloadImage = {setDownloadDialog}
+      show = {show}
+      setShowDate = {setShowDate}/>
   }
 
   return (

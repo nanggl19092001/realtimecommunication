@@ -204,23 +204,41 @@ class userController {
     }
 
 
-    getFriends(req,res) {
+    async getFriends(req,res) {
         const id = req.params.id
 
-        friendModel.find(
-            {
-                $or: [
-                    {user1: mongoose.Types.ObjectId(id)},
-                    {user2: mongoose.Types.ObjectId(id)}
-                ]
-            },
-            (results) => {
-                return res.send(JSON.stringify(results))
+       try {
+
+            const results = []
+
+            const friends = await friendModel.find(
+                {
+                    $or: [
+                        {user1: id},
+                        {user2: id}
+                    ]
+                }
+            )
+
+            for(let i = 0; i < friends.length; i++){
+                
+                const friendInfo = await accountModel.findOne(
+                    {_id: friends[i].user1 == id ? friends[i].user2 : friends[i].user1},
+                    {email: 0, phoneNumber: 0, password: 0}
+                )
+                results.push(friendInfo)
             }
-        )
+
+            return res.send(JSON.stringify(results))
+        }
+        catch (e) {
+            return res.send(JSON.stringify(e))
+        }
+        
+
     } 
 
-    searchUser(req,res) {
+    async searchUser(req,res) {
         const info = req.params.info
 
         accountModel.find(

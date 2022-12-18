@@ -38,13 +38,30 @@ socketIO.on('connection', (socket) => {
         socket.join(id)
     })
 
-    socket.on('call', ({sender, receiver}) => {
-        console.log(sender)
-        socket.to(receiver).emit('receive-call', sender)
+    socket.on('call', ({caller, receiver}) => {
+        console.log(caller, receiver)
+        socket.to(receiver._id).emit('receive-call', caller)
     })
 
     socket.on('disconnect', () => {
         socket.disconnect()
+    })
+
+    socket.on('decline-call', (caller) => {
+        socket.to(caller).emit('receive-decline-call')
+    })
+
+    socket.on('accept-call', ({caller}) => {
+        socket.to(caller).emit('answer')
+    })
+
+    socket.on('join-call-room', ({roomID, peerID, socketID, user}) => {
+        socket.to(roomID).broadcast.emit("user connected", {
+            peerID,
+            user,
+            roomID,
+            socketID
+        })
     })
 })
 

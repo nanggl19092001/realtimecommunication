@@ -9,10 +9,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const chatIcon = <Ionicons name="chatbubbles" size={70} color={"white"}></Ionicons>
 
-const chatIconForm = <Ionicons name="chatbubbles" size={120} color={"black"}></Ionicons>
+const chatIconForm = <Ionicons name="chatbubbles" size={120} color={"white"}></Ionicons>
 
 const Login = ({navigation}) => {
 
+    const [error, setError] = useState(null)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [resolvedLoggedIn, setResolvedLoggedIn] = useState(false)
@@ -35,6 +36,16 @@ const Login = ({navigation}) => {
     
 
     const handleLogin = () => {
+        if(!email || !password){
+            setError('Email or Password is missing')
+            return
+        }
+
+        if(!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)){
+            setError('Invalid email')
+            return
+        }
+
         fetch(`${SERVER_IP}/login`, {
             method: 'POST',
             headers: {
@@ -67,15 +78,18 @@ const Login = ({navigation}) => {
             <SafeAreaView style={{height: '100%'}}>       
                 <View style={style.label}>
                     {chatIconForm}
+                    <Text style={{color: 'white'}}>Chat app</Text>
                 </View>
                 <View style={style.content}>
                     <TextInput 
+                        onFocus={() => setError(null)}
                         style={style.input} 
                         value={email} 
                         placeholder="Email"
                         onChangeText={(Email) => setEmail(Email)}
                     ></TextInput>
-                    <TextInput 
+                    <TextInput
+                        onFocus={() => setError(null)}
                         style={style.input} 
                         value={password} 
                         placeholder="Password"
@@ -97,7 +111,14 @@ const Login = ({navigation}) => {
                     onPress={handleRegister}>
                         Dont have a account? Register here
                     </Text>
+                    {
+                            error && 
+                            <View style={style.errorContainer}>
+                                <Text style={style.error}>{error}</Text>
+                            </View>
+                    }
                 </View>
+                
             </SafeAreaView>
         </View>
         :
@@ -107,6 +128,7 @@ const Login = ({navigation}) => {
             <Text style={style.loadingText}>51900764</Text>
         </View>
     }
+    
     </>
   )
 }
@@ -114,7 +136,8 @@ const Login = ({navigation}) => {
 const style = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        padding: 10
+        padding: 10,
+        backgroundColor: '#251B37'
     },
     label: {
         alignSelf: 'center',
@@ -126,7 +149,8 @@ const style = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 3,
-        paddingLeft: 10
+        paddingLeft: 10,
+        backgroundColor: 'white'
     },
     content: {
         flex: 6
@@ -144,7 +168,8 @@ const style = StyleSheet.create({
     },
     text: {
         alignSelf: 'center',
-        marginTop: 20
+        marginTop: 20,
+        color: 'white'
     },
     loadingScreen: {
         width: '100%',
@@ -156,6 +181,19 @@ const style = StyleSheet.create({
     loadingText: {
         color: 'white',
         fontSize: 40
+    },
+    errorContainer: {
+        borderColor: 'rgba(255,0,0,0.4)',
+        padding: 10,
+        justifyContent: 'center',
+        borderWidth: 1,
+        backgroundColor: 'rgba(255,0,0,0.2)',
+        borderRadius: 10,
+        marginTop: 20,
+        alignSelf: 'center'
+    },
+    error: {
+        color: "white"
     }
 })
 

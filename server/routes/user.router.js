@@ -2,6 +2,7 @@ const express = require('express')
 const { addFileMessage } = require('../controllers/user.controller')
 const Router = express.Router()
 const userController = require('../controllers/user.controller')
+const changeAvatar = require('../middlewares/changeAvatar')
 
 Router.post('/password/:id', userController.changePassword)
 
@@ -32,6 +33,8 @@ Router.get('/friendrequest/:id', userController.getFriendRequest)
 Router.put('/friendrequest', userController.declineRequest)
 
 Router.post('/friendrequest', userController.friendRequest)
+
+Router.post('/updateavatar', changeAvatar.fields([{name: "avatar", maxCount: 1}]))
 
 
 module.exports = Router

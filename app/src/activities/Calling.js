@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import socketIO from '../utils/socketIO'
-import Calling from '../components/Calling'
-
+import Call from '../components/Call'
+import OnCall from '../components/OnCall'
+ 
 const VideoCall = ({navigation, route}) => {
 
   const [ received, setReceived ] = useState(route.params.receive)
@@ -11,18 +12,20 @@ const VideoCall = ({navigation, route}) => {
     const sender = route.params.user
     const receiver = route.params.friend._id
 
-    if(!route.params.receive){
-      socketIO.emit("call", {sender, receiver})
-    }
+    socketIO.on("receive-decline-call", () => {
+      navigation.goBack()
+    })
 
     return () => {
-      socketIO.removeAllListeners()
+      socketIO.removeListener("receive-decline-call")
     }
   }, [])
   return (
     <View style={styles.container}>
       {
-        received ? <OnCall/> : <Calling/>
+        received ? 
+        <OnCall navigation = {navigation} user={route.params.user} friend={route.params.friend}/> : 
+        <Call navigation = {navigation} user={route.params.user} friend={route.params.friend}/>
       }
     </View>
   )

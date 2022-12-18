@@ -1,7 +1,15 @@
-import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableHighlight, ScrollView } from 'react-native'
 import logout from '../utils/logout'
 import React, { useEffect, useState } from 'react'
 import { SERVER_IP } from '../constaint'
+import Entypo from 'react-native-vector-icons/Entypo'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import MaterialComunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+
+const ImageIcon = <Entypo name='image' size={25} color={"white"}/>
+const infoIcon = <Ionicons name='information' size={25} color={"white"}/>
+const lockIcon = <MaterialComunityIcon name='key-change' size={25} color={"white"}/>
+const LogoutIcon = <MaterialComunityIcon name='logout' size={25} color={"white"}/>
 
 const UserOptions = ({navigation, route}) => {
 
@@ -14,13 +22,17 @@ const UserOptions = ({navigation, route}) => {
     }
   )
 
+  const handleProfileInfo = () => {
+    navigation.navigate('Profile Infomation', {user: route.params.user})
+  }
+
   const handleChangePassword = () => {
     navigation.navigate('Change Password', {user: route.params.user})
   }
 
-    const handleLogout = async () => {
-        const result = await logout(navigation)
-    }
+  const handleLogout = async () => {
+    const result = await logout(navigation)
+  }
 
     useEffect(() => {
       fetch(`${SERVER_IP}/user/profile/${route.params.user}`)
@@ -38,6 +50,7 @@ const UserOptions = ({navigation, route}) => {
     }, [])
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <View>
         <Image 
@@ -57,12 +70,22 @@ const UserOptions = ({navigation, route}) => {
           style={styles.options}
           onPress={()=>{}}
           >
-          <Text style={styles.optionsText}>Change avatar</Text>
+            <View style={styles.optionContainer}>
+              <View style={styles.imageIcon}>
+                {ImageIcon}
+              </View>
+              <Text style={styles.optionsText}>Change avatar</Text>
+            </View>
         </TouchableHighlight>
         <TouchableHighlight 
           style={styles.options}
-          onPress={()=>{}}>
-          <Text style={styles.optionsText}>Profile infomation</Text>
+          onPress={handleProfileInfo}>
+          <View style={styles.optionContainer}>
+            <View style={styles.infoImage}>
+              {infoIcon}
+            </View>
+            <Text style={styles.optionsText}>Profile infomation</Text>
+          </View>
         </TouchableHighlight>
         
       </View>
@@ -73,15 +96,26 @@ const UserOptions = ({navigation, route}) => {
         <TouchableHighlight 
           style={styles.options}
           onPress={() => handleChangePassword()}>
-          <Text style={styles.optionsText}>Change password</Text>
+            <View style={styles.optionContainer}>
+              <View style={styles.changePassImage}>
+                {lockIcon}
+              </View>
+              <Text style={styles.optionsText}>Change password</Text>
+            </View>
         </TouchableHighlight>
         <TouchableHighlight style={styles.options}>
-          <Text style={styles.optionsText}
-        onPress={() => handleLogout()}>Log out</Text>
+            <View style={styles.optionContainer}>
+              <View style={styles.changePassImage}>
+                {LogoutIcon}
+              </View>
+              <Text style={styles.optionsText}
+              onPress={() => handleLogout()}>Log out</Text>
+            </View>
         </TouchableHighlight>
         
       </View>
     </View>
+    </ScrollView>
   )
 }
 
@@ -125,5 +159,27 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  optionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  imageIcon: {
+    marginRight: 10,
+    backgroundColor: '#227C70',
+    padding: 10,
+    borderRadius: 30
+  },
+  infoImage: {
+    marginRight: 10,
+    backgroundColor: '#4B56D2',
+    padding: 10,
+    borderRadius: 30
+  },
+  changePassImage: {
+    padding: 10,
+    backgroundColor: '#678983',
+    borderRadius: 50,
+    marginRight: 10
   }
 })

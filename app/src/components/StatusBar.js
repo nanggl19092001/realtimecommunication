@@ -19,7 +19,7 @@ const StatusBar = ({navigation, user, friend}) => {
     }
 
     const handleCall = () => {
-        navigation.navigate('Call', {user: user, friend: friend, receive: false})
+        navigation.navigate('Video Call', {caller: user, receiver: friend})
     }
     
   return (

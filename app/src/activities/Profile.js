@@ -1,6 +1,13 @@
-import { StyleSheet, Text, View, Button, Image, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Button, Image, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SERVER_IP } from '../constaint'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
+const personIcon = <Ionicons name='person-add' size={25} color="white"></Ionicons>
+const removePersonIcon = <Ionicons name='person-remove' size={25} color="white"></Ionicons>
+const mailIcon = <Ionicons name="mail" color="white" size={25}/>
+const giftIcon = <Ionicons name="gift-sharp" color="white" size={25}/>
+
 
 const Profile = ({navigation, route}) => {
 
@@ -71,20 +78,26 @@ const Profile = ({navigation, route}) => {
         {
           loading ? <></> :
             pendingFriendRequest ? 
-            <Button 
+            <TouchableOpacity
+            disabled={true}
+            onPress={handleUnfriend}
+            style={styles.buttonPending}
+            >
+              <Text>...</Text>
+            </TouchableOpacity>:
+            isFriend ?
+            <TouchableOpacity
+            onPress={handleUnfriend}
             style={styles.button}
-            title='Pending'
-            disabled={true}>
-            </Button>:
-            isFriend ? 
-            <Button
+            >
+              {removePersonIcon}
+            </TouchableOpacity> : 
+            <TouchableOpacity
+            onPress={handleAddFriend}
             style={styles.button}
-              title='Un Friend'
-              onPress={handleUnfriend}/> : 
-            <Button
-            style={styles.button}
-              title='Add Friend'
-              onPress={handleAddFriend}/>
+            >
+              {personIcon}
+            </TouchableOpacity>
           
         }
         {
@@ -98,10 +111,16 @@ const Profile = ({navigation, route}) => {
               <Text style={styles.sectionText}>
                 {`About ${profile.lastName}`}
               </Text>
-              <Text style={styles.text}>
-                {`${profile.email}`}
-                {`${profile.birthday}`}
-              </Text>
+              <View style={styles.infoContainer}>
+                {mailIcon}
+                <Text style={styles.text}>
+                  {`${profile.email}`}
+                </Text>
+              </View>
+              <View style={styles.infoContainer}>
+                {giftIcon}
+                <Text style={styles.text}>{`${profile.birthday.split('T')[0]}`}</Text>
+              </View>
               <Text style={styles.text}>
 
               </Text>
@@ -148,5 +167,29 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     paddingLeft: 20
+  },
+  button: {
+    backgroundColor: '#1778F2',
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 20
+  },
+  buttonPending: {
+    backgroundColor: 'gray',
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 20
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    padding: 20
   }
 })

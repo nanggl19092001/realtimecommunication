@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 
 function messageFormat(message) {
     if(message)
-      return message.message
+      return message.message.length > 20 ? message.message.slice(0,20) + "..." : message.message
     else
       return ""
   }
