@@ -158,6 +158,35 @@ class userController {
         })
     }
 
+    updateProfile(req,res) {
+        const userId = req.params.id
+        const {firstName, lastName, birthday} = req.body
+
+        console.log(firstName)
+        console.log(lastName)
+        console.log(birthday)
+
+        accountModel.updateOne(
+            {_id: userId},
+            {$set: {
+            firstName: firstName,
+            lastName: lastName,
+            birthday: birthday
+        }}, (err, result) => {
+            if(err) {
+                return res.send(JSON.stringify({
+                    status: 500,
+                    message: err
+                }))
+            }
+            else{
+                return res.send(JSON.stringify({
+                    status: 200
+                }))
+            }
+        })
+    }
+
     getMessageTemp(req,res) {
         const id = req.params.id
 

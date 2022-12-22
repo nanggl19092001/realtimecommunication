@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, Image, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Linking, Image, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SERVER_IP } from '../constaint'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -64,6 +64,10 @@ const Profile = ({navigation, route}) => {
     })
   }
 
+  handleMailActive = () => {
+    Linking.openURL('mailto:support@example.com?subject=SendMail&body=Description')
+  }
+
   return (
     <View style={styles.container}>
         {
@@ -71,7 +75,7 @@ const Profile = ({navigation, route}) => {
           <ActivityIndicator size={'large'}/> :
           <View style={styles.avatarContainer}>
             <Image style={styles.avatar}
-            source={{uri: `${SERVER_IP}/public/avatar/${id}.jpg`}}>
+            source={{uri: `${SERVER_IP}/public/avatar/${id}.jpg?${Date()}`}}>
             </Image>
           </View>
         }
@@ -113,7 +117,9 @@ const Profile = ({navigation, route}) => {
               </Text>
               <View style={styles.infoContainer}>
                 {mailIcon}
-                <Text style={styles.text}>
+                <Text
+                onPress={handleMailActive} 
+                style={styles.text}>
                   {`${profile.email}`}
                 </Text>
               </View>

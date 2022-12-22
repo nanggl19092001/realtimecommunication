@@ -19,7 +19,7 @@ const StatusBar = ({navigation, user, friend}) => {
     }
 
     const handleCall = () => {
-        navigation.navigate('Video Call', {caller: user, receiver: friend})
+        navigation.navigate('Video Call', {caller: user, receiver: friend, user: user})
     }
     
   return (
@@ -34,7 +34,7 @@ const StatusBar = ({navigation, user, friend}) => {
                 </View>
             </TouchableHighlight>
                 <Image style={styles.friendAvatar}
-                    source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg`}}
+                    source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg?${Date()}`}}
                 ></Image>
             <TouchableOpacity
             onPress={handleNavigateProfile}>  

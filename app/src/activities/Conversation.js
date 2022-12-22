@@ -32,7 +32,7 @@ const Conversation = ({navigation, route}) => {
     <View style={styles.container} >
       <MessageContext.Provider value = {{message, setMessage, refresh, setRefresh}}>
         <StatusBar navigation = {navigation} user = {route.params.user} friend = {route.params.friend}/>
-        <Message user = {route.params.user} friend = {route.params.friend}/>
+        <Message navigation = {navigation} user = {route.params.user} friend = {route.params.friend}/>
         <TextBar user = {route.params.user} friend = {route.params.friend}/>
       </MessageContext.Provider>
     </View>

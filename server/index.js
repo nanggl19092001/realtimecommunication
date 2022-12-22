@@ -1,6 +1,5 @@
 const express = require('express')
 const path = require('path')
-const {ExpressPeerServer} = require('peer')
 const connection = require('./database')
 const routes = require('./routes/index.router')
 const app = express()
@@ -16,10 +15,6 @@ const socketIO = require('socket.io')(http, {
     cors: '*'
 })
 
-const peerServer = ExpressPeerServer(http, {
-    debug: true,
-    path: '/call'
-})
 
 const cors = require('cors')
 
@@ -27,8 +22,6 @@ app.use((req, res, next) => {
     res.io = socketIO
     next()
 })
-
-app.use('/call', peerServer)
 
 app.use(cors())
 
@@ -39,30 +32,34 @@ socketIO.on('connection', (socket) => {
     })
 
     socket.on('call', ({caller, receiver}) => {
-        console.log(caller, receiver)
         socket.to(receiver._id).emit('receive-call', caller)
+    })
+
+    socket.on('decline-call', (caller) => {
+        
+        socket.to(caller._id ? caller._id : caller).emit('receive-decline-call')
+    })
+
+    socket.on('streaming', () => {
+        socket.broadcast.emit('streamed')
     })
 
     socket.on('disconnect', () => {
         socket.disconnect()
     })
 
-    socket.on('decline-call', (caller) => {
-        socket.to(caller).emit('receive-decline-call')
+    socket.on('join-video-call', (peerId, stream) => {
+        console.log(peerId)
+        socket.broadcast.emit('join-call', (peerId,stream))
     })
 
-    socket.on('accept-call', ({caller}) => {
-        socket.to(caller).emit('answer')
-    })
+    
 
-    socket.on('join-call-room', ({roomID, peerID, socketID, user}) => {
-        socket.to(roomID).broadcast.emit("user connected", {
-            peerID,
-            user,
-            roomID,
-            socketID
-        })
-    })
+    // socket.on('accept-call', ({caller}) => {
+    //     socket.to(caller).emit('answer')
+    // })
+
+    
 })
 
 routes(app)

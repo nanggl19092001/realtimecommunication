@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, Button, TouchableHighlight } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, TouchableHighlight, ScrollView } from 'react-native'
 import { SERVER_IP } from '../constaint'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -81,6 +81,7 @@ const Register = () => {
   }
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <SafeAreaView>
         <TextInput 
@@ -152,11 +153,13 @@ const Register = () => {
       
       </SafeAreaView>
     </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20
   }
   ,

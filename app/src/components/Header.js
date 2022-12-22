@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, Image, TouchableHighlight, Button } from 'react-native'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { SERVER_IP } from '../constaint'
 import React, { useCallback, useEffect, useState } from 'react'
 import socketIO from '../utils/socketIO'
@@ -68,7 +68,7 @@ const Header = ({navigation, user}) => {
         >
           <Image
           style={style.avatar} 
-          source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg`}}></Image>
+          source={{uri: `${SERVER_IP}/public/avatar/${user}.jpg?${Date()}`}}></Image>
         </TouchableHighlight>
       </View>
     </View>
@@ -77,6 +77,7 @@ const Header = ({navigation, user}) => {
 
 const style = StyleSheet.create({
     container: {
+        minHeight: 50,
         flexDirection: 'row',
         padding: 10,
         justifyContent: 'space-between',

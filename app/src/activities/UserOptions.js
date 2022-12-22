@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, Image, TouchableHighlight, ScrollView } from 'react-native'
 import logout from '../utils/logout'
-import React, { useEffect, useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { SERVER_IP } from '../constaint'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialComunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import DocumentPicker from 'react-native-document-picker'
+import { useFocusEffect } from '@react-navigation/native'
 
 const ImageIcon = <Entypo name='image' size={25} color={"white"}/>
 const infoIcon = <Ionicons name='information' size={25} color={"white"}/>
@@ -21,6 +23,37 @@ const UserOptions = ({navigation, route}) => {
       phonenumber: ''
     }
   )
+  const [ refresh, setRefresh ] = useState()
+
+  const handleDocumentSelection = useCallback(async () => {
+    try {
+        const response = await DocumentPicker.pick({
+            presentationStyle: 'formSheet'
+        })
+
+        if(response[0]){
+          const data = new FormData()
+
+          data.append("sender", route.params.user)
+          data.append("avatar", response[0])
+
+          fetch(`${SERVER_IP}/user/updateavatar`, {
+            method: 'post',
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            body: data,
+          }).then(res => res.json())
+          .then(res => {
+            if(res.status == 200){
+              setRefresh(!refresh)
+            }
+          })
+        }
+    }
+    catch (err) {
+        console.warn(err)}
+})
 
   const handleProfileInfo = () => {
     navigation.navigate('Profile Infomation', {user: route.params.user})
@@ -34,7 +67,8 @@ const UserOptions = ({navigation, route}) => {
     const result = await logout(navigation)
   }
 
-    useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
       fetch(`${SERVER_IP}/user/profile/${route.params.user}`)
       .then(res => res.json())
       .then(res => {
@@ -48,6 +82,7 @@ const UserOptions = ({navigation, route}) => {
           )
       })
     }, [])
+  )
 
   return (
     <ScrollView>
@@ -55,7 +90,7 @@ const UserOptions = ({navigation, route}) => {
       <View>
         <Image 
         style={styles.avatar}
-        source={{uri: `${SERVER_IP}/public/avatar/${route.params.user}.jpg`}}
+        source={{uri: `${SERVER_IP}/public/avatar/${route.params.user}.jpg?${Date()}`}}
         ></Image>
         <Text style = {styles.username}>
           {`${user.firstName} ${user.lastName}`}
@@ -68,7 +103,7 @@ const UserOptions = ({navigation, route}) => {
         </Text>
         <TouchableHighlight 
           style={styles.options}
-          onPress={()=>{}}
+          onPress={handleDocumentSelection}
           >
             <View style={styles.optionContainer}>
               <View style={styles.imageIcon}>

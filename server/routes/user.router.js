@@ -8,6 +8,8 @@ Router.post('/password/:id', userController.changePassword)
 
 Router.get('/profile/:id', userController.getProfile)
 
+Router.put('/profile/:id', userController.updateProfile)
+
 Router.get('/profileinfo', userController.getProfileInfomation)
 
 Router.get('/conversation/:id', userController.getConversation)
@@ -34,7 +36,9 @@ Router.put('/friendrequest', userController.declineRequest)
 
 Router.post('/friendrequest', userController.friendRequest)
 
-Router.post('/updateavatar', changeAvatar.fields([{name: "avatar", maxCount: 1}]))
+Router.post('/updateavatar', changeAvatar.fields([{name: "avatar", maxCount: 1}]), (req,res) => {
+    res.send(JSON.stringify({status: 200}))
+})
 
 
 module.exports = Router

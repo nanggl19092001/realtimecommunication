@@ -68,7 +68,7 @@ const Friends = ({navigation, user}) => {
             >
               <View style={styles.friendsContainer}>
                 <Image style={styles.friendsAvatar}
-                source={{uri: `${SERVER_IP}/public/avatar/${con.user._id}.jpg`}}></Image>
+                source={{uri: `${SERVER_IP}/public/avatar/${con.user._id}.jpg?${Date()}`}}></Image>
                 <View>
                   <Text style={styles.friendsName}>{`${con.user.lastName} ${con.user.firstName}`}</Text>
                   <LastestText message = {con.lastMess} user = {user}/>

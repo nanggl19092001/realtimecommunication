@@ -106,6 +106,7 @@ export default TextBar
 const styles = StyleSheet.create({
     TextBarContainer: {
         flex: 1,
+        minHeight: 50,
         backgroundColor: 'red',
         flexDirection: 'row',
         alignItems: 'center',

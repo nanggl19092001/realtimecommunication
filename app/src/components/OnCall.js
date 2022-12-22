@@ -27,7 +27,7 @@ const OnCall = ({navigation, user, friend}) => {
 
     const handleAccept = () => {
       socketIO.emit('accept-call', friend)
-      navigation.replace("Video Call", {caller: friend, receiver: user})
+      navigation.replace("Video Call", {caller: friend, receiver: user, user: user})
     }
   return (
     <View>
